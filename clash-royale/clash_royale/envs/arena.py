@@ -6,19 +6,20 @@ from gymnasium import spaces
 
 
 class ArenaEnv(gym.Env):
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 16}
 
-    def __init__(self, render_mode=None, size=5):
-        self.size = size  # The size of the square grid
-        self.window_size_height = 800  # The size of the PyGame window height
+    def __init__(self, render_mode=None, width=8, height=16):
+        self.width = width  # The size of the square grid
+        self.height = height
         self.window_size_width = 450  # The size of the PyGame window width
+        self.window_size_height = 850  # The size of the PyGame window height
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
         self.observation_space = spaces.Dict(
             {
-                "agent": spaces.Box(0, size - 1, shape=(2,), dtype=int),
-                "target": spaces.Box(0, size - 1, shape=(2,), dtype=int),
+                "agent": spaces.Box(np.array([0, 0]), np.array([width - 1, height - 1]), shape=(2,), dtype=int),
+                "target": spaces.Box(np.array([0, 0]), np.array([width - 1, height - 1]), shape=(2,), dtype=int),
             }
         )
 
@@ -64,15 +65,21 @@ class ArenaEnv(gym.Env):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
 
+        self._king_blue_tower_draw_location = [3.5, 14.5]
+        self._king_red_tower_draw_location = [3.5, 0.5]
+
+        self._king_blue_tower_center_location = [4, 15]
+        self._king_red_tower_center_location = [4, 1]
+
+        self._king_tower_range = 4.0
+
         # Choose the agent's location uniformly at random
-        self._agent_location = self.np_random.integers(0, self.size, size=2, dtype=int)
+        self._agent_location = self.np_random.integers(0, [self.width, self.height], size=2, dtype=int)
 
         # We will sample the target's location randomly until it does not coincide with the agent's location
         self._target_location = self._agent_location
         while np.array_equal(self._target_location, self._agent_location):
-            self._target_location = self.np_random.integers(
-                0, self.size, size=2, dtype=int
-            )
+            self._target_location = self.np_random.integers(0, [self.width, self.height], size=2, dtype=int)
 
         observation = self._get_obs()
         info = self._get_info()
@@ -87,7 +94,7 @@ class ArenaEnv(gym.Env):
         direction = self._action_to_direction[action]
         # We use `np.clip` to make sure we don't leave the grid
         self._agent_location = np.clip(
-            self._agent_location + direction, 0, self.size - 1
+            self._agent_location + direction, 0, [self.width - 1, self.height - 1]
         )
         # An episode is done iff the agent has reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
@@ -117,45 +124,67 @@ class ArenaEnv(gym.Env):
         canvas = pygame.Surface((self.window_size_width, self.window_size_height))
         canvas.fill((255, 255, 255))
         pix_square_size_height = (
-            self.window_size_height / self.size
+            self.window_size_height / self.height
         )  # The height of a single grid square in pixels
         pix_square_size_width = (
-            self.window_size_width / self.size
+            self.window_size_width / self.width
         )
 
-        # First we draw the target
-        pygame.draw.rect(
-            canvas,
-            (255, 0, 0),
-            pygame.Rect(
-                (pix_square_size_width * self._target_location[0], pix_square_size_height * self._target_location[1]),
-                (pix_square_size_width, pix_square_size_height),
-            ),
-        )
-        # Now we draw the agent
+        pix_square_size = np.array([pix_square_size_width, pix_square_size_height])
+
+
+        # Draw tower ranges
         pygame.draw.circle(
             canvas,
-            (0, 0, 255),
-            ((self._agent_location[0] + 0.5) * pix_square_size_width, (self._agent_location[1] + 0.5) * pix_square_size_height),
-            pix_square_size_height / 3,
+            (211, 211, 211),
+            self._king_blue_tower_center_location * pix_square_size,
+            self._king_tower_range * pix_square_size_height,
+        )
+        pygame.draw.circle(
+            canvas,
+            (211, 211, 211),
+            self._king_red_tower_center_location * pix_square_size,
+            self._king_tower_range * pix_square_size_height,
         )
 
-        # Finally, add some gridlines
-        for x in range(self.size + 1):
+        # Add some gridlines
+        for x in range(self.height + 1):
             pygame.draw.line(
                 canvas,
-                0,
+                (0, 0, (x == self.height // 2 - 1 or x == self.height // 2 + 1) * 255),
                 (0, pix_square_size_height * x),
                 (self.window_size_width, pix_square_size_height * x),
-                width=3,
+                width=(1 + (x == self.height // 2 - 1 or x == self.height // 2 + 1)),
             )
+
+        for x in range(self.width + 1):
             pygame.draw.line(
                 canvas,
                 0,
                 (pix_square_size_width * x, 0),
                 (pix_square_size_width * x, self.window_size_height),
-                width=3,
+                width=1,
             )
+
+        # Blue tower
+        pygame.draw.rect(
+            canvas,
+            (0, 0, 155),
+            pygame.Rect(
+                pix_square_size * self._king_blue_tower_draw_location,
+                pix_square_size,
+            ),
+        )
+
+        # Red tower
+        pygame.draw.rect(
+            canvas,
+            (155, 0, 0),
+            pygame.Rect(
+                pix_square_size * self._king_red_tower_draw_location,
+                pix_square_size,
+            ),
+        )
 
         if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
