@@ -10,7 +10,8 @@ class ArenaEnv(gym.Env):
 
     def __init__(self, render_mode=None, size=5):
         self.size = size  # The size of the square grid
-        self.window_size = 512  # The size of the PyGame window
+        self.window_size_height = 800  # The size of the PyGame window height
+        self.window_size_width = 450  # The size of the PyGame window width
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
@@ -108,32 +109,35 @@ class ArenaEnv(gym.Env):
             pygame.init()
             pygame.display.init()
             self.window = pygame.display.set_mode(
-                (self.window_size, self.window_size)
+                (self.window_size_width, self.window_size_height)
             )
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.Surface((self.window_size, self.window_size))
+        canvas = pygame.Surface((self.window_size_width, self.window_size_height))
         canvas.fill((255, 255, 255))
-        pix_square_size = (
-            self.window_size / self.size
-        )  # The size of a single grid square in pixels
+        pix_square_size_height = (
+            self.window_size_height / self.size
+        )  # The height of a single grid square in pixels
+        pix_square_size_width = (
+            self.window_size_width / self.size
+        )
 
         # First we draw the target
         pygame.draw.rect(
             canvas,
             (255, 0, 0),
             pygame.Rect(
-                pix_square_size * self._target_location,
-                (pix_square_size, pix_square_size),
+                (pix_square_size_width * self._target_location[0], pix_square_size_height * self._target_location[1]),
+                (pix_square_size_width, pix_square_size_height),
             ),
         )
         # Now we draw the agent
         pygame.draw.circle(
             canvas,
             (0, 0, 255),
-            (self._agent_location + 0.5) * pix_square_size,
-            pix_square_size / 3,
+            ((self._agent_location[0] + 0.5) * pix_square_size_width, (self._agent_location[1] + 0.5) * pix_square_size_height),
+            pix_square_size_height / 3,
         )
 
         # Finally, add some gridlines
@@ -141,15 +145,15 @@ class ArenaEnv(gym.Env):
             pygame.draw.line(
                 canvas,
                 0,
-                (0, pix_square_size * x),
-                (self.window_size, pix_square_size * x),
+                (0, pix_square_size_height * x),
+                (self.window_size_width, pix_square_size_height * x),
                 width=3,
             )
             pygame.draw.line(
                 canvas,
                 0,
-                (pix_square_size * x, 0),
-                (pix_square_size * x, self.window_size),
+                (pix_square_size_width * x, 0),
+                (pix_square_size_width * x, self.window_size_height),
                 width=3,
             )
 
