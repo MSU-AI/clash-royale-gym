@@ -4,6 +4,9 @@ import pygame
 import gymnasium as gym
 from gymnasium import spaces
 
+MAX_NUMBER_TROOPS = 32
+MAX_TROOP_TYPES = 32
+MAX_TROOP_HEALTH = 1000
 
 class ArenaEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 16}
@@ -20,6 +23,8 @@ class ArenaEnv(gym.Env):
             {
                 "agent": spaces.Box(np.array([0, 0]), np.array([width - 1, height - 1]), shape=(2,), dtype=int),
                 "target": spaces.Box(np.array([0, 0]), np.array([width - 1, height - 1]), shape=(2,), dtype=int),
+                "blue-troops": spaces.Box(0, np.tile(np.array([width - 1, height - 1, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
+                "red-troops": spaces.Box(0, np.tile(np.array([width - 1, height - 1, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
             }
         )
 
@@ -52,7 +57,7 @@ class ArenaEnv(gym.Env):
         self.clock = None 
 
     def _get_obs(self):
-        return {"agent": self._agent_location, "target": self._target_location}
+        return {"agent": self._agent_location, "target": self._target_location, "blue-troops": self._blue_troops, "red-troops": self._red_troops}
     
     def _get_info(self):
         return {
@@ -72,6 +77,9 @@ class ArenaEnv(gym.Env):
         self._king_red_tower_center_location = [4, 1]
 
         self._king_tower_range = 4.0
+
+        self._blue_troops = np.zeros((MAX_NUMBER_TROOPS,4,), dtype=np.float32)
+        self._red_troops = np.zeros((MAX_NUMBER_TROOPS,4,), dtype=np.float32)
 
         # Choose the agent's location uniformly at random
         self._agent_location = self.np_random.integers(0, [self.width, self.height], size=2, dtype=int)
