@@ -23,8 +23,8 @@ class ArenaEnv(gym.Env):
             {
                 "agent": spaces.Box(np.array([0, 0]), np.array([width - 1, height - 1]), shape=(2,), dtype=int),
                 "target": spaces.Box(np.array([0, 0]), np.array([width - 1, height - 1]), shape=(2,), dtype=int),
-                "blue-troops": spaces.Box(0, np.tile(np.array([width - 1, height - 1, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
-                "red-troops": spaces.Box(0, np.tile(np.array([width - 1, height - 1, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
+                "blue-troops": spaces.Box(0, np.tile(np.array([width, height, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
+                "red-troops": spaces.Box(0, np.tile(np.array([width, height, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
             }
         )
 
@@ -80,6 +80,10 @@ class ArenaEnv(gym.Env):
 
         self._blue_troops = np.zeros((MAX_NUMBER_TROOPS,4,), dtype=np.float32)
         self._red_troops = np.zeros((MAX_NUMBER_TROOPS,4,), dtype=np.float32)
+        
+        #Test
+        self._blue_troops[0] = [3, 3, 0, 150]
+        self._red_troops[0] = [4, 12, 1, 100]
 
         # Choose the agent's location uniformly at random
         self._agent_location = self.np_random.integers(0, [self.width, self.height], size=2, dtype=int)
@@ -177,17 +181,54 @@ class ArenaEnv(gym.Env):
         # Blue tower
         pygame.draw.rect(
             canvas,
-            (0, 0, 155),
+            (0, 0, 190),
             pygame.Rect(
                 pix_square_size * self._king_blue_tower_draw_location,
                 pix_square_size,
             ),
         )
 
+        troop_colors = [(153, 255, 51), (255, 102, 155)]
+        troop_sizes = [0.5, 0.4]
+        for troop in self._blue_troops:
+            if troop[3] > 0:
+                pygame.draw.circle(
+                    canvas,
+                    troop_colors[int(troop[2])],
+                    [troop[0], troop[1]] * pix_square_size,
+                    troop_sizes[int(troop[2])] * pix_square_size_height,
+                )
+                pygame.draw.rect(
+                    canvas,
+                    (0, 0, 155),
+                    pygame.Rect(
+                        [troop[0] - 0.5, troop[1] - troop_sizes[int(troop[2])] - 0.2] * pix_square_size,
+                        [1, 0.2] * pix_square_size,
+                    ),
+                )
+                
+
+        for troop in self._red_troops:
+            if troop[3] > 0:
+                pygame.draw.circle(
+                    canvas,
+                    troop_colors[int(troop[2])],
+                    [troop[0], troop[1]] * pix_square_size,
+                    troop_sizes[int(troop[2])] * pix_square_size_height,
+                )
+                pygame.draw.rect(
+                    canvas,
+                    (155, 0, 0),
+                    pygame.Rect(
+                        [troop[0] - 0.5, troop[1] - troop_sizes[int(troop[2])] - 0.2] * pix_square_size,
+                        [1, 0.2] * pix_square_size,
+                    ),
+                )
+
         # Red tower
         pygame.draw.rect(
             canvas,
-            (155, 0, 0),
+            (190, 0, 0),
             pygame.Rect(
                 pix_square_size * self._king_red_tower_draw_location,
                 pix_square_size,
