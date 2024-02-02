@@ -8,18 +8,70 @@ MAX_NUMBER_TROOPS = 32
 MAX_TROOP_TYPES = 32
 MAX_TROOP_HEALTH = 1000
 
-troop_colors = [(153, 255, 51), (255, 102, 155)]
-troop_sizes = [0.5, 0.4]
-troop_ranges = [0.7, 2]
+KING_TOWER_RANGE = 7.0
+KING_TOWER_DAMAGE = 144
+KING_TOWER_HEALTH = 6408
 
+TROOP_COLORS = [(153, 255, 51), (255, 102, 155)]
+TROOP_SIZES = [0.5, 0.4]
+TROOP_RANGES = [0.8, 5]
+TROOP_HEALTH = [888, 403]
+TROOP_DAMAGE = [195, 157]
+
+SQUARES_PER_HP = (0.5 / 100)
+HEALTH_BAR_HEIGHT = 0.15
+
+
+def calculate_health_bar_length(max_health):
+    return np.log10(max_health/100 + 1)
+
+def draw_rectangle_from_center(canvas, color, location, size):
+    pygame.draw.rect(
+            canvas,
+            color,
+            pygame.Rect(
+                location - size / 2,
+                size,
+            ),
+        )
+    
+def draw_health_bar(canvas, health_bar_color, center, health, max_health, pix_square_size):
+    draw_rectangle_from_center(canvas, health_bar_color, 
+                            center * pix_square_size,
+                            [(health / max_health) * calculate_health_bar_length(max_health), 
+                             HEALTH_BAR_HEIGHT] * pix_square_size)
+
+def draw_king_tower(canvas, color, location, pix_square_size, health):
+    draw_rectangle_from_center(canvas, (0, 0, 0), location * pix_square_size, pix_square_size)
+    draw_rectangle_from_center(canvas, color, location * pix_square_size, pix_square_size*0.9)
+    draw_health_bar(canvas, color, 
+                    location - [0, pix_square_size[1] / 2 - 0.15],
+                    health, KING_TOWER_DAMAGE, pix_square_size)
+
+def draw_troop(canvas, troop, health_bar_color, pix_square_size):
+    #   draws using circles
+    troop_type = int(troop[2])
+    radius = TROOP_SIZES[troop_type]
+    pygame.draw.circle(
+        canvas,
+        TROOP_COLORS[troop_type],
+        troop[:2] * pix_square_size,
+        radius * pix_square_size[1],
+    )
+    draw_health_bar(canvas, health_bar_color,
+                    [troop[0], troop[1] - radius - 0.15],
+                    troop[3],
+                    TROOP_HEALTH[troop_type],
+                    pix_square_size)
+    
 class ArenaEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 8}
 
-    def __init__(self, render_mode=None, width=8, height=16):
+    def __init__(self, render_mode=None, width=8, height=18):
         self.width = width  # The size of the square grid
         self.height = height
-        self.window_size_width = 450  # The size of the PyGame window width
-        self.window_size_height = 850  # The size of the PyGame window height
+        self.window_size_width = 360  # The size of the PyGame window width
+        self.window_size_height = 810  # The size of the PyGame window height
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
@@ -58,13 +110,13 @@ class ArenaEnv(gym.Env):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
 
-        self._king_blue_tower_draw_location = [3.5, 14.5]
-        self._king_red_tower_draw_location = [3.5, 0.5]
+        self._king_blue_tower_center_location = np.array([self.width//2, self.height-1])
+        self._king_red_tower_center_location = np.array([self.width//2, 1])
 
-        self._king_blue_tower_center_location = [4, 15]
-        self._king_red_tower_center_location = [4, 1]
+        self._king_blue_tower_health = KING_TOWER_HEALTH
+        self._king_red_tower_health = KING_TOWER_HEALTH
 
-        self._king_tower_range = 4.0
+        self._king_KING_TOWER_RANGE = KING_TOWER_RANGE
 
         self._blue_troops = np.zeros((MAX_NUMBER_TROOPS,4,), dtype=np.float32)
         self._red_troops = np.zeros((MAX_NUMBER_TROOPS,4,), dtype=np.float32)
@@ -117,7 +169,7 @@ class ArenaEnv(gym.Env):
                     move_direction[0][i] = v / dist, dist
 
                 v, dist = move_direction[0][i]
-                if dist > troop_ranges[int(troop[2])]:
+                if dist > TROOP_RANGES[int(troop[2])]:
                     v = v * 0.1
                     troop[0] += v[0]
                     troop[1] += v[1]
@@ -130,7 +182,7 @@ class ArenaEnv(gym.Env):
                     move_direction[1][i] = v/dist, dist
 
                 v, dist = move_direction[1][i]
-                if dist > troop_ranges[int(troop[2])]:
+                if dist > TROOP_RANGES[int(troop[2])]:
                     v = v * 0.1
                     troop[0] += v[0]
                     troop[1] += v[1]
@@ -177,13 +229,13 @@ class ArenaEnv(gym.Env):
             canvas,
             (211, 211, 211),
             self._king_blue_tower_center_location * pix_square_size,
-            self._king_tower_range * pix_square_size_height,
+            self._king_KING_TOWER_RANGE * pix_square_size_height,
         )
         pygame.draw.circle(
             canvas,
             (211, 211, 211),
             self._king_red_tower_center_location * pix_square_size,
-            self._king_tower_range * pix_square_size_height,
+            self._king_KING_TOWER_RANGE * pix_square_size_height,
         )
 
         # Add some gridlines
@@ -206,59 +258,22 @@ class ArenaEnv(gym.Env):
             )
 
         # Blue tower
-        pygame.draw.rect(
-            canvas,
-            (0, 0, 190),
-            pygame.Rect(
-                pix_square_size * self._king_blue_tower_draw_location,
-                pix_square_size,
-            ),
-        )
+        draw_king_tower(canvas, (0,0,190), 
+                        self._king_blue_tower_center_location, 
+                        pix_square_size, self._king_blue_tower_health)
 
         for troop in self._blue_troops:
             if troop[3] > 0:
-                pygame.draw.circle(
-                    canvas,
-                    troop_colors[int(troop[2])],
-                    [troop[0], troop[1]] * pix_square_size,
-                    troop_sizes[int(troop[2])] * pix_square_size_height,
-                )
-                pygame.draw.rect(
-                    canvas,
-                    (0, 0, 155),
-                    pygame.Rect(
-                        [troop[0] - 0.5, troop[1] - troop_sizes[int(troop[2])] - 0.2] * pix_square_size,
-                        [1, 0.2] * pix_square_size,
-                    ),
-                )
+                draw_troop(canvas, troop, (0,0,155), pix_square_size)
                 
 
         for troop in self._red_troops:
             if troop[3] > 0:
-                pygame.draw.circle(
-                    canvas,
-                    troop_colors[int(troop[2])],
-                    [troop[0], troop[1]] * pix_square_size,
-                    troop_sizes[int(troop[2])] * pix_square_size_height,
-                )
-                pygame.draw.rect(
-                    canvas,
-                    (155, 0, 0),
-                    pygame.Rect(
-                        [troop[0] - 0.5, troop[1] - troop_sizes[int(troop[2])] - 0.2] * pix_square_size,
-                        [1, 0.2] * pix_square_size,
-                    ),
-                )
+                draw_troop(canvas, troop, (155,0, 0), pix_square_size)
 
-        # Red tower
-        pygame.draw.rect(
-            canvas,
-            (190, 0, 0),
-            pygame.Rect(
-                pix_square_size * self._king_red_tower_draw_location,
-                pix_square_size,
-            ),
-        )
+        draw_king_tower(canvas, (190,0,0),
+                        self._king_red_tower_center_location, 
+                        pix_square_size, self._king_red_tower_health)
 
         if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
