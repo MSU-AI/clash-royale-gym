@@ -45,8 +45,8 @@ def draw_king_tower(canvas, color, location, pix_square_size, health):
     draw_rectangle_from_center(canvas, (0, 0, 0), location * pix_square_size, pix_square_size)
     draw_rectangle_from_center(canvas, color, location * pix_square_size, pix_square_size*0.9)
     draw_health_bar(canvas, color, 
-                    location - [0, pix_square_size[1] / 2 - 0.15],
-                    health, KING_TOWER_DAMAGE, pix_square_size)
+                    location - [0, 0.7],
+                    health, KING_TOWER_HEALTH, pix_square_size)
 
 def draw_troop(canvas, troop, health_bar_color, pix_square_size):
     #   draws using circles
@@ -257,23 +257,23 @@ class ArenaEnv(gym.Env):
                 width=1,
             )
 
-        # Blue tower
-        draw_king_tower(canvas, (0,0,190), 
-                        self._king_blue_tower_center_location, 
-                        pix_square_size, self._king_blue_tower_health)
+        draw_king_tower(canvas, (190,0,0),
+                        self._king_red_tower_center_location, 
+                        pix_square_size, self._king_red_tower_health)
+
 
         for troop in self._blue_troops:
             if troop[3] > 0:
                 draw_troop(canvas, troop, (0,0,155), pix_square_size)
                 
-
         for troop in self._red_troops:
             if troop[3] > 0:
                 draw_troop(canvas, troop, (155,0, 0), pix_square_size)
 
-        draw_king_tower(canvas, (190,0,0),
-                        self._king_red_tower_center_location, 
-                        pix_square_size, self._king_red_tower_health)
+
+        draw_king_tower(canvas, (0,0,190), 
+                        self._king_blue_tower_center_location, 
+                        pix_square_size, self._king_blue_tower_health)
 
         if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
