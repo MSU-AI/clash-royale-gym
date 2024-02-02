@@ -13,7 +13,7 @@ troop_sizes = [0.5, 0.4]
 troop_ranges = [0.7, 2]
 
 class ArenaEnv(gym.Env):
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 16}
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 8}
 
     def __init__(self, render_mode=None, width=8, height=16):
         self.width = width  # The size of the square grid
