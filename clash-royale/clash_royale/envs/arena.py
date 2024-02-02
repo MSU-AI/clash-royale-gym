@@ -8,6 +8,10 @@ MAX_NUMBER_TROOPS = 32
 MAX_TROOP_TYPES = 32
 MAX_TROOP_HEALTH = 1000
 
+troop_colors = [(153, 255, 51), (255, 102, 155)]
+troop_sizes = [0.5, 0.4]
+troop_ranges = [0.7, 2]
+
 class ArenaEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 16}
 
@@ -21,8 +25,6 @@ class ArenaEnv(gym.Env):
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
         self.observation_space = spaces.Dict(
             {
-                "agent": spaces.Box(np.array([0, 0]), np.array([width - 1, height - 1]), shape=(2,), dtype=int),
-                "target": spaces.Box(np.array([0, 0]), np.array([width - 1, height - 1]), shape=(2,), dtype=int),
                 "blue-troops": spaces.Box(0, np.tile(np.array([width, height, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
                 "red-troops": spaces.Box(0, np.tile(np.array([width, height, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
             }
@@ -31,17 +33,6 @@ class ArenaEnv(gym.Env):
         # We have 4 actions, corresponding to "right", "up", "left", "down"
         self.action_space = spaces.Discrete(4)
 
-        """
-        The following dictionary maps abstract actions from `self.action_space` to
-        the direction we will walk in if that action is taken.
-        I.e. 0 corresponds to "right", 1 to "up" etc.
-        """
-        self._action_to_direction = {
-            0: np.array([1, 0]),
-            1: np.array([0, 1]),
-            2: np.array([-1, 0]),
-            3: np.array([0, -1]),
-        }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -57,13 +48,10 @@ class ArenaEnv(gym.Env):
         self.clock = None 
 
     def _get_obs(self):
-        return {"agent": self._agent_location, "target": self._target_location, "blue-troops": self._blue_troops, "red-troops": self._red_troops}
+        return {"blue-troops": self._blue_troops, "red-troops": self._red_troops}
     
     def _get_info(self):
         return {
-            "distance": np.linalg.norm(
-                self._agent_location - self._target_location, ord=1
-            )
         }
     
     def reset(self, seed=None, options=None):
@@ -82,16 +70,9 @@ class ArenaEnv(gym.Env):
         self._red_troops = np.zeros((MAX_NUMBER_TROOPS,4,), dtype=np.float32)
         
         #Test
-        self._blue_troops[0] = [3, 3, 0, 150]
-        self._red_troops[0] = [4, 12, 1, 100]
-
-        # Choose the agent's location uniformly at random
-        self._agent_location = self.np_random.integers(0, [self.width, self.height], size=2, dtype=int)
-
-        # We will sample the target's location randomly until it does not coincide with the agent's location
-        self._target_location = self._agent_location
-        while np.array_equal(self._target_location, self._agent_location):
-            self._target_location = self.np_random.integers(0, [self.width, self.height], size=2, dtype=int)
+        self._blue_troops[0] = [3.2, 5.6, 0, 150]
+        self._red_troops[0] = [5.8, 3.76, 1, 100]
+        self._red_troops[1] = [1.3, 10.7, 1, 100]
 
         observation = self._get_obs()
         info = self._get_info()
@@ -102,14 +83,60 @@ class ArenaEnv(gym.Env):
         return observation, info
     
     def step(self, action):
-        # Map the action (element of {0,1,2,3}) to the direction we walk in
-        direction = self._action_to_direction[action]
-        # We use `np.clip` to make sure we don't leave the grid
-        self._agent_location = np.clip(
-            self._agent_location + direction, 0, [self.width - 1, self.height - 1]
-        )
+        move_direction = [[[None, 10000] for j in range(MAX_NUMBER_TROOPS)] for i in range(2)]
+
+        for i in range(MAX_NUMBER_TROOPS):
+            if self._blue_troops[i][3] <= 0:
+                continue
+
+            min_j = min_v = None
+            min_dist = 1000
+            for j in range(MAX_NUMBER_TROOPS):
+                if self._red_troops[j][3] <= 0:
+                    continue
+                v = (self._red_troops[j] - self._blue_troops[i])[:2]
+                dist = np.linalg.norm(v)
+                if min_dist > dist:
+                    min_j = j
+                    min_dist = dist
+                    min_v = v / dist
+                    
+            if min_j is None:
+                break
+
+            move_direction[0][i] = min_v, min_dist
+            if move_direction[1][min_j][1] > min_dist:
+                move_direction[1][min_j] = (-1 * min_v), min_dist
+
+        for i in range(MAX_NUMBER_TROOPS):
+            troop = self._blue_troops[i]
+            if troop[3] > 0:
+                v = self._king_red_tower_center_location - troop[:2]
+                dist = np.linalg.norm(v)
+                if move_direction[0][i][1] > dist:
+                    move_direction[0][i] = v / dist, dist
+
+                v, dist = move_direction[0][i]
+                if dist > troop_ranges[int(troop[2])]:
+                    v = v * 0.1
+                    troop[0] += v[0]
+                    troop[1] += v[1]
+
+            troop = self._red_troops[i]
+            if troop[3] > 0:
+                v = self._king_blue_tower_center_location - troop[:2]
+                dist = np.linalg.norm(v)
+                if move_direction[1][i][1] > dist:
+                    move_direction[1][i] = v/dist, dist
+
+                v, dist = move_direction[1][i]
+                if dist > troop_ranges[int(troop[2])]:
+                    v = v * 0.1
+                    troop[0] += v[0]
+                    troop[1] += v[1]
+
         # An episode is done iff the agent has reached the target
-        terminated = np.array_equal(self._agent_location, self._target_location)
+        terminated = False
         reward = 1 if terminated else 0  # Binary sparse rewards
         observation = self._get_obs()
         info = self._get_info()
@@ -188,8 +215,6 @@ class ArenaEnv(gym.Env):
             ),
         )
 
-        troop_colors = [(153, 255, 51), (255, 102, 155)]
-        troop_sizes = [0.5, 0.4]
         for troop in self._blue_troops:
             if troop[3] > 0:
                 pygame.draw.circle(
