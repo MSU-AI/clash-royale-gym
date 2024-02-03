@@ -9,21 +9,29 @@ MAX_TROOP_TYPES = 32
 MAX_TROOP_HEALTH = 1000
 
 KING_TOWER_RANGE = 7.0
-KING_TOWER_DAMAGE = 144
-KING_TOWER_HEALTH = 6408
+KING_TOWER_DAMAGE = 109
+KING_TOWER_HEALTH = 4824
 
-TROOP_COLORS = [(153, 255, 51), (255, 102, 155)]
-TROOP_SIZES = [0.5, 0.4]
-TROOP_RANGES = [0.8, 5]
-TROOP_HEALTH = [888, 403]
-TROOP_DAMAGE = [195, 157]
+TROOP_SPEED_MAP = {'slow': 0.75, 'medium': 1.0, 'fast': 1.5, 'very fast': 2.0}
 
-SQUARES_PER_HP = (0.5 / 100)
+# barbarian, archer, giant, skeleton
+TROOP_COLORS = [(153, 255, 51), (255, 102, 155), (139, 69, 19), (250, 250, 250)]
+TROOP_SPEEDS = [1.0, 1.0, 0.75, 1.5]
+TROOP_SIZES = [0.3, 0.3, 0.3, 0.3]
+TROOP_ATTACK_RANGE = [0.8, 5, 0.8, 0.8]
+TROOP_SIGHT_RANGE = [5.5, 5.5, 7.5, 5.5]
+TROOP_HEALTH = [670, 304, 4091, 81]
+TROOP_DAMAGE = [147, 118, 169, 81]
+TROOP_BUILDING_TARGETING = [False, False, True, False]
+
+
+
 HEALTH_BAR_HEIGHT = 0.15
 
 
 def calculate_health_bar_length(max_health):
-    return np.log10(max_health/100 + 1)
+    #return 0.5529703695314562 * np.log(max_health + 1)
+    return 1
 
 def draw_rectangle_from_center(canvas, color, location, size):
     pygame.draw.rect(
@@ -57,9 +65,15 @@ def draw_troop(canvas, troop, health_bar_color, pix_square_size):
     radius = TROOP_SIZES[troop_type]
     pygame.draw.circle(
         canvas,
-        TROOP_COLORS[troop_type],
+        (0,0,0),
         troop[:2] * pix_square_size,
         radius * pix_square_size[1],
+    )
+    pygame.draw.circle(
+        canvas,
+        TROOP_COLORS[troop_type],
+        troop[:2] * pix_square_size,
+        radius * pix_square_size[1]*0.95,
     )
     draw_health_bar(canvas, health_bar_color,
                     [troop[0], troop[1] - radius - 0.15],
@@ -68,7 +82,7 @@ def draw_troop(canvas, troop, health_bar_color, pix_square_size):
                     pix_square_size)
     
 class ArenaEnv(gym.Env):
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 8}
+    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 16}
 
     def __init__(self, render_mode=None, width=8, height=18):
         self.width = width  # The size of the square grid
@@ -125,9 +139,11 @@ class ArenaEnv(gym.Env):
         self._red_troops = np.zeros((MAX_NUMBER_TROOPS,4,), dtype=np.float32)
         
         #Test
-        self._blue_troops[0] = [3.2, 5.6, 0, 150]
-        self._red_troops[0] = [5.8, 3.76, 1, 100]
-        self._red_troops[1] = [1.3, 10.7, 1, 100]
+        self._blue_troops[0] = [3.2, 5.6, 0, TROOP_HEALTH[0]]
+        self._blue_troops[1] = [0.5, 3.2, 2, TROOP_HEALTH[2]]
+        self._red_troops[0] = [5.8, 3.76, 1, TROOP_HEALTH[1]]
+        self._red_troops[1] = [1.3, 10.75, 3, TROOP_HEALTH[3]]
+        self._red_troops[2] = [2.1, 3.7, 0, TROOP_HEALTH[0] - 100]
 
         observation = self._get_obs()
         info = self._get_info()
@@ -141,27 +157,42 @@ class ArenaEnv(gym.Env):
         move_direction = [[[None, 10000] for j in range(MAX_NUMBER_TROOPS)] for i in range(2)]
 
         for i in range(MAX_NUMBER_TROOPS):
-            if self._blue_troops[i][3] <= 0:
+            troop_type_i = int(self._blue_troops[i][2])
+            if self._blue_troops[i][3] <= 0 or TROOP_BUILDING_TARGETING[troop_type_i]:
                 continue
 
-            min_j = min_v = None
+            min_v = None
             min_dist = 1000
             for j in range(MAX_NUMBER_TROOPS):
                 if self._red_troops[j][3] <= 0:
                     continue
                 v = (self._red_troops[j] - self._blue_troops[i])[:2]
                 dist = np.linalg.norm(v)
-                if min_dist > dist:
-                    min_j = j
+                if min_dist > dist and dist <= TROOP_SIGHT_RANGE[troop_type_i]:
                     min_dist = dist
                     min_v = v / dist
                     
-            if min_j is None:
-                break
+            if not min_v is None:
+                move_direction[0][i] = min_v, min_dist
+        
+        for j in range(MAX_NUMBER_TROOPS):
+            troop_type_j = int(self._red_troops[j][2])
+            if self._red_troops[j][3] <= 0 or TROOP_BUILDING_TARGETING[troop_type_j]:
+                continue
 
-            move_direction[0][i] = min_v, min_dist
-            if move_direction[1][min_j][1] > min_dist:
-                move_direction[1][min_j] = (-1 * min_v), min_dist
+            min_v = None
+            min_dist = 1000
+            for i in range(MAX_NUMBER_TROOPS):
+                if self._blue_troops[i][3] <= 0:
+                    continue
+                v = (self._blue_troops[i] - self._red_troops[j])[:2]
+                dist = np.linalg.norm(v)
+                if min_dist > dist and dist <= TROOP_SIGHT_RANGE[troop_type_j]:
+                    min_dist = dist
+                    min_v = v / dist
+                    
+            if not min_v is None:
+                move_direction[1][j] = min_v, min_dist
 
         for i in range(MAX_NUMBER_TROOPS):
             troop = self._blue_troops[i]
@@ -172,8 +203,8 @@ class ArenaEnv(gym.Env):
                     move_direction[0][i] = v / dist, dist
 
                 v, dist = move_direction[0][i]
-                if dist > TROOP_RANGES[int(troop[2])]:
-                    v = v * 0.1
+                if dist > TROOP_ATTACK_RANGE[int(troop[2])]:
+                    v = v * TROOP_SPEEDS[int(troop[2])] / self.metadata["render_fps"]
                     troop[0] += v[0]
                     troop[1] += v[1]
 
@@ -185,8 +216,8 @@ class ArenaEnv(gym.Env):
                     move_direction[1][i] = v/dist, dist
 
                 v, dist = move_direction[1][i]
-                if dist > TROOP_RANGES[int(troop[2])]:
-                    v = v * 0.1
+                if dist > TROOP_ATTACK_RANGE[int(troop[2])]:
+                    v = v * TROOP_SPEEDS[int(troop[2])] / self.metadata["render_fps"]
                     troop[0] += v[0]
                     troop[1] += v[1]
 
