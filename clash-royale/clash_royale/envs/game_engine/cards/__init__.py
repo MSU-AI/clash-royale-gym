@@ -33,7 +33,7 @@ class Troop(Card):
         self.sight_range = sight_range
         self.troop_targeting = troop_targeting
         self.is_air = is_air,
-        self.air_targeting = air_targetings
+        self.air_targeting = air_targeting
 
     def render(self, canvas) -> None:
         pygame.draw.circle(
