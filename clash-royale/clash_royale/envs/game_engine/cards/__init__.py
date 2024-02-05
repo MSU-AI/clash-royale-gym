@@ -21,7 +21,8 @@ class Troop(Card):
                  attack_range:int,
                  sight_range:int,
                  troop_targeting:bool,
-                 is_air:bool) -> None:
+                 is_air:bool,
+                 air_targeting:bool) -> None:
         super().__init__(elixir, pixel_size)
         self.location = location
         self.max_health = health
@@ -31,7 +32,8 @@ class Troop(Card):
         self.attack_range = attack_range
         self.sight_range = sight_range
         self.troop_targeting = troop_targeting
-        self.is_air = is_air
+        self.is_air = is_air,
+        self.air_targeting = air_targetings
 
     def render(self, canvas) -> None:
         pygame.draw.circle(
@@ -46,6 +48,37 @@ class Troop(Card):
             self.location * self.pixel_size,
             0.3 * self.pixel_size[0]*0.95,#  0.3 temp set size, using height as sizes
         )
+
+class Building(Card):
+    def __init__(self,
+                 elixir:int,
+                 pixel_size:npt.ArrayLike,
+
+                 location: npt.ArrayLike,
+                 health:int,
+                 damage:int,
+                 hit_speed:int,
+                 attack_range:int,
+                 sight_range:int,
+                 air_targeting:bool,) -> None:
+        super().__init__(elixir, pixel_size)
+        self.location = location
+        self.max_health = health
+        self.health = health
+        self.damage = damage
+        self.hit_speed = hit_speed
+        self.attack_range = attack_range
+        self.sight_range = sight_range
+        self.air_targeting = air_targeting
+
+    def render(self, canvas) -> None:
+        pass
+
+class PrincessTower(Building):
+    pass
+
+class KingTower(Building):
+    pass
 
 class Knight(Troop):
     def __init__(self, pixel_size: np.ArrayLike, location: npt.ArrayLike) -> None:
