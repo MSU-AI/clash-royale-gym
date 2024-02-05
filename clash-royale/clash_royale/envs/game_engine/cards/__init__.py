@@ -3,25 +3,27 @@ import numpy.typing as npt
 import pygame
 
 class Card():
-    def __init__(self, pixel_size: npt.ArrayLike):
+    def __init__(self,
+                 elixir: int,
+                 pixel_size: npt.ArrayLike) -> None:
+        self.elixir = elixir
         self.pixel_size = pixel_size
 
 class Troop(Card):
     def __init__(self,
+                 elixir:int,
                  pixel_size:npt.ArrayLike,
 
                  location: npt.ArrayLike,
-                 elixir:int,
                  health:int,
                  damage:int,
                  hit_speed:int,
                  attack_range:int,
                  sight_range:int,
                  troop_targeting:bool,
-                 is_air:bool):
-        super().__init__(pixel_size)
+                 is_air:bool) -> None:
+        super().__init__(elixir, pixel_size)
         self.location = location
-        self.elixir = elixir
         self.max_health = health
         self.health = health
         self.damage = damage
@@ -31,7 +33,7 @@ class Troop(Card):
         self.troop_targeting = troop_targeting
         self.is_air = is_air
 
-    def render(self, canvas):
+    def render(self, canvas) -> None:
         pygame.draw.circle(
             canvas,
             (0,0,0),
@@ -46,11 +48,11 @@ class Troop(Card):
         )
 
 class Knight(Troop):
-    def __init__(self, pixel_size: np.ArrayLike, location: npt.ArrayLike):
+    def __init__(self, pixel_size: np.ArrayLike, location: npt.ArrayLike) -> None:
         super().__init__(
+            3,
             pixel_size,
             location,
-            3,
             1766,
             202,
             1.2,
@@ -58,8 +60,6 @@ class Knight(Troop):
             5.5,
             True,
             False)
-    def render(self):
-        pass
 
 name_to_card = {
     'knight' : Knight
