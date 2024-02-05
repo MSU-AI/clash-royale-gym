@@ -34,17 +34,40 @@ class Player():
         np.random.shuffle(deck)
         self.hand = Hand(deck)
 
+
 class GameEngine():
     # note: muzero should never require a game to be copied
     def __init__(self, 
                  deck1: list[str] = ['barbarian' * 8], 
                  deck2: list[str] = ['barbarian' * 8], 
+                 fps=30,
                  seed: int=0):
         np.random.seed(seed)
 
         self.images = []
         self.actions = []
+        self.fps = fps
         self.current_frame = 0
 
         self.player_1 = Player(deck1)
         self.player_2 = Player(deck2)
+
+    def image(self):
+        pass
+
+    def apply(self, action: tuple(int, int, int)):
+        pass
+
+    def step(self):
+        pass
+
+    def is_terminal(self):
+        pass
+
+    def terminal_value(self):
+        pass
+
+    def legal_actions(self):
+        pass
+
+
