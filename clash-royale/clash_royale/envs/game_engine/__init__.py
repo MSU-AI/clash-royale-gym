@@ -38,15 +38,19 @@ class Player():
         np.random.shuffle(deck)
         self.hand = Hand(deck)
 
-    def get_pseudo_valid_hand(self) -> list[cr.Card]:
-        return [card for card in self.hand.hand() if card.elixir <= self.elixir]
+    def get_pseudo_legal_cards(self) -> list[int]:
+        hand = self.hand.hand()
+        return [card_idx for card_idx in range(len(hand)) if hand[card_idx] <= self.elixir]
     
     def play_card(self, index: int) -> None:
         elixir = self.hand.query(index).elixir
         self.hand.pop(index)
         self.elixir -= elixir
 
-        assert index < 4 and self.elixir >= 0 
+        assert index < 4 and self.elixir >= 0
+
+    def step(self, elixir_rate: float, fps: int, frames: int=1) -> None:
+        self.elixir += ((elixir_rate / fps) * frames)
 
 
 class GameEngine():
@@ -54,8 +58,8 @@ class GameEngine():
     def __init__(self, 
                  deck1: list[str] = ['knight' * 8], 
                  deck2: list[str] = ['knight' * 8], 
-                 fps=30,
-                 seed: int=0,
+                 fps: int = 30,
+                 seed: int = 0,
                  resolution: npt.ArrayLike = [128, 128],
                  dimensions: npt.ArrayLike = [32, 18]):
         
@@ -67,6 +71,9 @@ class GameEngine():
         self.actions = []
         self.current_frame = 0
 
+        self.placement_mask = np.ones(shape=(32,18,), dtype=bool)
+        self.elixir_rate = (1/2.8)
+
         self.player_1 = Player(deck1)
         self.player_2 = Player(deck2)
 
@@ -76,7 +83,9 @@ class GameEngine():
     def apply(self, action: tuple(int, int, int)):
         pass
 
-    def step(self):
+    def step(self, frames:int = 1):
+        self.player_1.step(self.elixir_rate, self.fps, frames)
+        self.player_2.step(self.elixir_rate, self.fps, frames)
         pass
 
     def is_terminal(self):
@@ -87,14 +96,16 @@ class GameEngine():
 
     def legal_actions(self, to_play: int) -> np.ndarray:
         actions = np.zeros(shape=(32, 18, 5), dtype=np.float64)
+        actions[:,:,4] = 1 # no card is always legal
         if to_play == 0:
-            hand = self.player_1.get_hand()
+            hand = self.player_1.get_pseudo_legal_cards()
         else:
-            hand = self.player_2.get_hand()
+            hand = self.player_2.get_pseudo_legal_cards()
 
-        for card in hand:
-            if card.elixir
-        # action logic
+        for card_index in hand:
+            # process card placements
+            actions[self.placement_mask, card_index] = 1
+
         return actions
 
 
