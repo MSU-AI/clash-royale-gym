@@ -9,11 +9,13 @@ import clash_royale.envs.game_engine as engine
 class ArenaEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"]}
 
-    def __init__(self, render_mode=None):
+    def __init__(self, fps: int=30, render_mode: str=None):
         self.width = 18
         self.height = 32
-        self.window_size_width = 128  # The size of the PyGame window width
-        self.window_size_height = 128  # The size of the PyGame window height
+        self.window_size_width = 128
+        self.window_size_height = 128
+
+        self.fps = fps
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
@@ -52,7 +54,7 @@ class ArenaEnv(gym.Env):
 
         return observation, info
     
-    def step(self, action):
+    def step(self, action, frames=1):
         
         terminated = False
         reward = 1 if terminated else 0  # Binary sparse rewards
