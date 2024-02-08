@@ -19,8 +19,8 @@ class ArenaEnv(gym.Env):
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
         self.observation_space = spaces.Dict(
             {
-                "p1-view": spaces.Box(0, 255, shape=(self.width, self.height, 3), dtype=np.uint8),
-                "p2-view": spaces.Box(0, 255, shape=(self.width, self.height, 3), dtype=np.uint8),
+                "p1-view": spaces.Box(0, 255, shape=(self.window_size_width, self.window_size_height, 3), dtype=np.uint8),
+                "p2-view": spaces.Box(0, 255, shape=(self.window_size_width, self.window_size_height, 3), dtype=np.uint8),
             }
         )
 
@@ -41,8 +41,8 @@ class ArenaEnv(gym.Env):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
 
-        self._p1_view = np.zeros(shape=(self.width, self.height, 3), dtype=np.uint8)
-        self._p2_view = np.zeros(shape=(self.width, self.height, 3), dtype=np.uint8)
+        self._p1_view = np.zeros(shape=(self.window_size_width, self.window_size_height, 3), dtype=np.uint8)
+        self._p2_view = np.zeros(shape=(self.window_size_width, self.window_size_height, 3), dtype=np.uint8)
 
         observation = self._get_obs()
         info = self._get_info()
@@ -89,7 +89,7 @@ class ArenaEnv(gym.Env):
             # The following line will automatically add a delay to keep the framerate stable.
             #self.clock.tick(self.metadata["render_fps"])
         else:  # rgb_array
-            return np.zeros(shape=(self.width, self.height, 3), dtype=np.uint8)
+            return np.zeros(shape=(self.window_size_width, self.window_size_height, 3), dtype=np.uint8)
             #return np.transpose(
             #    np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
             #)
