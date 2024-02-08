@@ -81,7 +81,7 @@ class KingTower(Building):
     pass
 
 class Knight(Troop):
-    def __init__(self, pixel_size: np.ArrayLike, location: npt.ArrayLike) -> None:
+    def __init__(self, pixel_size: npt.ArrayLike, location: npt.ArrayLike) -> None:
         super().__init__(
             3,
             pixel_size,
