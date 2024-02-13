@@ -214,7 +214,7 @@ class ArenaEnv(gym.Env):
                 dist = np.linalg.norm(v)
                 if move_direction[1][i][1] > dist:
                     move_direction[1][i] = v/dist, dist
-
+ v
                 v, dist = move_direction[1][i]
                 if dist > TROOP_ATTACK_RANGE[int(troop[2])]:
                     v = v * TROOP_SPEEDS[int(troop[2])] / self.metadata["render_fps"]
