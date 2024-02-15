@@ -1,1 +1,1 @@
-from clash_royale.envs.arena import ArenaEnv
+from clash_royale.envs.clashroyale import ClashRoyaleEnv

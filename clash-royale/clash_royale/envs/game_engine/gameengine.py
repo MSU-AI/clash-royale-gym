@@ -11,7 +11,7 @@ from typing import List
 from clash_royale.envs.ngame_engine.entities.entity import Entity, EntityCollection
 
 
-class Arena(EntityCollection):
+class GameEngine(EntityCollection):
     """
     Arena - High-level simulation component
 
