@@ -8,7 +8,7 @@ as they will greatly simplify the simulation procedure.
 
 from typing import List
 
-from clash_royale.envs.ngame_engine.entities.entity import Entity, EntityCollection
+from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
 
 
 class GameEngine(EntityCollection):
