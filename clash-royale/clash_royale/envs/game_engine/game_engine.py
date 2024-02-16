@@ -12,6 +12,7 @@ import numpy.typing as npt
 
 from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
 from clash_royale.envs.game_engine.arena import Arena
+from clash_royale.envs.game_engine.struct import Scheduler
 
 
 class GameEngine(EntityCollection):
@@ -50,6 +51,7 @@ class GameEngine(EntityCollection):
         self.arena = Arena(width=self.width, height=self.height)
         self.player1 = Player(deck1)
         self.player2 = Player(deck2)
+        self.scheduler = Scheduler(fps=30)
 
     def reset(self) -> None:
         """
@@ -62,7 +64,7 @@ class GameEngine(EntityCollection):
         self.arena.reset()
         self.player1.reset(elixir=5)
         self.player2.reset(elixir=5)
-        pass
+        self.scheduler.reset()
 
     def make_image(self) -> npt.NDArray[np.uint8]:
         """

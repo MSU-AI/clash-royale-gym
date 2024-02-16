@@ -4,6 +4,27 @@ Various structures to be utilized
 
 import dataclasses
 
+class Scheduler:
+    """
+    Scheduling class to handle all timings,
+    such as attacks, elixir increase, etc.
+    For now, it will just store frame_count.
+    """
+    def __init__(self, fps: int =30):
+        self.fps = fps
+        self.frame = 0
+    
+    def reset(self):
+        self.frame = 0
+
+    def step(self, frames: int=1):
+        self.frame += frames
+        # possibly check all event timings here
+
+    def frame(self) -> int:
+        return self.frame
+    
+
 
 @dataclasses.dataclass(slots=True)
 class Stats:
