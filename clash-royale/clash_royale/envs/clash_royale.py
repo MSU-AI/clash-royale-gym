@@ -4,6 +4,8 @@ import pygame
 import gymnasium as gym
 from gymnasium import spaces
 
+from clash_royale.envs.game_engine.game_engine import GameEngine
+
 MAX_NUMBER_TROOPS = 32
 MAX_TROOP_TYPES = 32
 MAX_TROOP_HEALTH = 1000
