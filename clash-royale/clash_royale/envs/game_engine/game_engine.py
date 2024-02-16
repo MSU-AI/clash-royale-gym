@@ -76,3 +76,15 @@ class GameEngine(EntityCollection):
         """
 
         pass
+
+    def apply(self, action) -> None:
+        """
+        Applies a given action to the environment, checks
+        for validity of the action via asserts.
+
+        Missing Arena.apply() method.
+        """
+        
+        self.arena.apply(action)
+        pass
+    
