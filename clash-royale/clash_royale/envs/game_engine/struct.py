@@ -24,6 +24,30 @@ class Scheduler:
     def frame(self) -> int:
         return self.frame
     
+class GameScheduler:
+    """
+    Template class for game scheduling
+    """
+    def __init__(self, scheduler: Scheduler, fps: int=30) -> None:
+        self.scheduler = scheduler
+
+class DefaultScheduler(GameScheduler):
+    """
+    Class for default 1v1 game scheduling
+    """
+    def __init__(self, scheduler: Scheduler, fps: int=30) -> None:
+        super.__init__(scheduler, fps)
+
+    def elixir_rate(self) -> float:
+        pass
+
+    def game_state(self) -> int:
+        """
+        Function to get current game state:
+        ex: Game is over, double elixir, overtime, etc.
+        """
+        pass
+    
 
 
 @dataclasses.dataclass(slots=True)
