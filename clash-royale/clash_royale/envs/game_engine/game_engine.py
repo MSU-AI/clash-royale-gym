@@ -12,7 +12,7 @@ import numpy.typing as npt
 
 from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
 from clash_royale.envs.game_engine.arena import Arena
-from clash_royale.envs.game_engine.struct import Scheduler
+from clash_royale.envs.game_engine.struct import Scheduler, DefaultScheduler
 
 
 class GameEngine(EntityCollection):
@@ -51,7 +51,9 @@ class GameEngine(EntityCollection):
         self.arena = Arena(width=self.width, height=self.height)
         self.player1 = Player(deck1)
         self.player2 = Player(deck2)
-        self.scheduler = Scheduler(fps=30)
+
+        self.scheduler = Scheduler(fps=3s0)
+        self.game_scheduler = DefaultScheduler(self.scheduler, fps=30)
 
     def reset(self) -> None:
         """
@@ -87,4 +89,11 @@ class GameEngine(EntityCollection):
         
         self.arena.apply(action)
         pass
-    
+
+    def legal_actions(self):
+        """
+        
+        Returns a list of legal actions.
+        Format is TBD
+        """
+        pass
