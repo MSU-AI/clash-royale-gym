@@ -4,11 +4,15 @@ High-level components for managing the simulation
 This file contains components that are intended to manage and preform the simulation.
 The components defined here are probably what end users want to utilize,
 as they will greatly simplify the simulation procedure.
+
+How should we decide order? Length Width Height?
+I think LxHxCard.
 """
 
 from typing import List, Tuple
 import numpy as np
 import numpy.typing as npt
+import pygame
 
 from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
 from clash_royale.envs.game_engine.arena import Arena
@@ -51,8 +55,8 @@ class GameEngine(EntityCollection):
         self.player1 = Player(deck1)
         self.player2 = Player(deck2)
 
-        self.scheduler = Scheduler(fps=30)
-        self.game_scheduler = DefaultScheduler(self.scheduler, fps=30)
+        self.scheduler = Scheduler(fps=30) # counting frames
+        self.game_scheduler = DefaultScheduler(self.scheduler, fps=30) # determining elixir etc.
 
     def reset(self) -> None:
         """
@@ -67,7 +71,7 @@ class GameEngine(EntityCollection):
         self.player2.reset(elixir=5)
         self.scheduler.reset()
 
-    def make_image(self, player: int) -> npt.NDArray[np.uint8]:
+    def make_image(self, player_id: int) -> npt.NDArray[np.uint8]:
         """
         Asks the arena to render itself.
 
@@ -76,18 +80,35 @@ class GameEngine(EntityCollection):
         and then ask the entities to render themselves.
         """
 
-        pass
+        entities = self.arena.get_entities()
+        canvas = pygame.Surface(size=self.resolution)
 
-    def apply(self, action) -> None:
+        #...
+
+        return np.array(pygame.surfarray.pixels3d(canvas))
+
+    def apply(self, player_id: int, action: Tuple[int, int, int] | None) -> None:
         """
         Applies a given action to the environment, checks
         for validity of the action via asserts.
-
-        Missing Arena.apply() method.
         """
+        if action is None:
+            return
         
-        self.arena.apply(action)
-        pass
+        assert(action[0] >= 0 and action[0] < self.width)
+        assert(action[1] >= 0 and action[1] < self.height)
+        assert(action[2] >= 0 and action[2] < 4)
+        
+        if player_id == 0:
+            curr_player = self.player1
+        else:
+            curr_player = self.player2
+
+        card = curr_player.hand[action[2]]
+        assert(card.elixir <= curr_player.elixir)
+
+        self.arena.play_card(action[0], action[1], card)
+        curr_player.play_card(action[2])
 
     def step(self, frames: int=1):
         """
