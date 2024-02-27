@@ -83,7 +83,7 @@ class GameEngine(EntityCollection):
         entities = self.arena.get_entities()
         canvas = pygame.Surface(size=self.resolution)
 
-        #...
+        #rendering logic goes here...
 
         return np.array(pygame.surfarray.pixels3d(canvas))
 
