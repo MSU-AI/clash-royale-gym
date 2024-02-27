@@ -125,12 +125,22 @@ class GameEngine(EntityCollection):
         self.scheduler.step(frames)
 
 
-    def legal_actions(self):
+    def legal_actions(self, player_id: int) -> npt.NDArray[np.float64]:
         """
         Returns a list of legal actions.
-        Format is TBD
         """
-        pass
+        actions = np.zeros(shape=(32, 18, 5), dtype=np.float64)
+        actions[:,:,4] = 1 # no card is always legal
+        if player_id == 0:
+            hand = self.player_1.get_pseudo_legal_cards()
+        else:
+            hand = self.player_2.get_pseudo_legal_cards()
+
+        placement_mask = self.arena.get_placement_mask()
+        for card_index in hand:
+            actions[placement_mask, card_index] = 1
+
+        return actions
 
     def is_terminal(self) -> bool:
         """
