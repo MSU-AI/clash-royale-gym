@@ -136,7 +136,16 @@ class GameEngine(EntityCollection):
         """
         Determines if game has ended
         """
-        pass
+        if self.game_scheduler.is_game_over():
+            return True
+        
+        if self.game_scheduler.is_overtime():
+            player1_val = self.arena.tower_count(0)
+            player2_val = self.arena.tower_count(1)
+            if player1_val != player2_val:
+                return True
+            
+        return False
 
     def terminal_value(self) -> int:
         """
