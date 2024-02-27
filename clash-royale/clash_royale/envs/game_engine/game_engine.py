@@ -56,7 +56,7 @@ class GameEngine(EntityCollection):
         self.player2 = Player(deck2)
 
         self.scheduler = Scheduler(fps=30) # counting frames
-        self.game_scheduler = DefaultScheduler(self.scheduler, fps=30) # determining elixir etc.
+        self.game_scheduler = DefaultScheduler(self.scheduler) # determining elixir etc.
 
     def reset(self) -> None:
         """
@@ -110,18 +110,52 @@ class GameEngine(EntityCollection):
         self.arena.play_card(action[0], action[1], card)
         curr_player.play_card(action[2])
 
-    def step(self, frames: int=1):
+    def step(self, frames: int=1) -> None:
         """
         Steps through a number of frames,
         applying simulations and updating required components.
         """
 
-        pass
+        # update elixir first, order TBD.
+        elixir_rate = self.game_scheduler.elixir_rate()
+        self.player1.step(elixir_rate, frames)
+        self.player2.step(elixir_rate, frames)
+
+        self.arena.step(frames)
+        self.scheduler.step(frames)
+
 
     def legal_actions(self):
         """
-        
         Returns a list of legal actions.
         Format is TBD
         """
         pass
+
+    def is_terminal(self) -> bool:
+        """
+        Determines if game has ended
+        """
+        pass
+
+    def terminal_value(self) -> int:
+        """
+        Returns side won, otherwise returns -1.
+        """
+        player1_val = self.arena.tower_count(0)
+        player2_val = self.arena.tower_count(1)
+        if player1_val == player2_val:
+            player1_val = self.arena.lowest_tower_health(0)
+            player2_val = self.arena.lowest_tower_health(1)
+
+        if player1_val > player2_val:
+            return 1
+        
+        if player2_val > player1_val:
+            return 0
+
+        if player1_val == player2_val:
+            return -1
+        
+    
+
