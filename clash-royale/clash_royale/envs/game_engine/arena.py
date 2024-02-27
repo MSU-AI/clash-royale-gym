@@ -30,3 +30,11 @@ class Arena(EntityCollection):
         
         self.width = width  # Width of arena
         self.height = height  # Height of arena
+
+    def reset(self):
+        pass
+
+    def step(self):
+        pass
+
+    

@@ -13,6 +13,7 @@ import numpy.typing as npt
 from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
 from clash_royale.envs.game_engine.arena import Arena
 from clash_royale.envs.game_engine.struct import Scheduler, DefaultScheduler
+from clash_royale.envs.game_engine.player import Player
 
 
 class GameEngine(EntityCollection):
@@ -41,8 +42,6 @@ class GameEngine(EntityCollection):
         The game_engine should be initialized with settings such as resolution
         and framerate, this shouldn't be used to initialize
         any specific actual game, that will be handled in reset.
-
-        Player class missing.
         """
         self.width = width  # Width of arena
         self.height = height  # Height of arena
@@ -52,7 +51,7 @@ class GameEngine(EntityCollection):
         self.player1 = Player(deck1)
         self.player2 = Player(deck2)
 
-        self.scheduler = Scheduler(fps=3s0)
+        self.scheduler = Scheduler(fps=30)
         self.game_scheduler = DefaultScheduler(self.scheduler, fps=30)
 
     def reset(self) -> None:
@@ -68,7 +67,7 @@ class GameEngine(EntityCollection):
         self.player2.reset(elixir=5)
         self.scheduler.reset()
 
-    def make_image(self) -> npt.NDArray[np.uint8]:
+    def make_image(self, player: int) -> npt.NDArray[np.uint8]:
         """
         Asks the arena to render itself.
 
@@ -88,6 +87,14 @@ class GameEngine(EntityCollection):
         """
         
         self.arena.apply(action)
+        pass
+
+    def step(self, frames: int=1):
+        """
+        Steps through a number of frames,
+        applying simulations and updating required components.
+        """
+
         pass
 
     def legal_actions(self):
