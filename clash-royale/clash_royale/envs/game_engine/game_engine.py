@@ -46,6 +46,9 @@ class GameEngine(EntityCollection):
         The game_engine should be initialized with settings such as resolution
         and framerate, this shouldn't be used to initialize
         any specific actual game, that will be handled in reset.
+
+        Arena() Constructor missing
+        Player() Constructor missing
         """
         self.width = width  # Width of arena
         self.height = height  # Height of arena
@@ -78,6 +81,9 @@ class GameEngine(EntityCollection):
         TODO: We need to figure out this procedure!
         Arena should render any generic components,
         and then ask the entities to render themselves.
+
+        individual sprite rendering methods required.
+        arena.get_entities() missing
         """
 
         entities = self.arena.get_entities()
