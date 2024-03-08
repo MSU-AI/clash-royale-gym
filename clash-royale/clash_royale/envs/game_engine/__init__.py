@@ -89,7 +89,7 @@ class GameEngine():
     def image(self):
         pass
 
-    def apply(self, action: tuple(int, int, int)) -> None:
+    def apply(self, action: tuple[int, int, int]) -> None:
         pass
 
     def step(self, frames:int = 1) -> None:
