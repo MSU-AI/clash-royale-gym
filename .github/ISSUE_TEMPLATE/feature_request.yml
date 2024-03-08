@@ -1,0 +1,48 @@
+name: Feature Request
+description: This project thrives from differentiation from competing apps. Suggest an idea for CR-RL.
+labels: [feature request]
+body:
+
+  # Description
+  - type: textarea
+    attributes:
+      label: What feature or improvement do you think would benefit CR-RL?
+      description: Please include your use case
+    validations:
+      required: true
+
+  # Tooltip about Requirements
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+        Please include a list changes required to make this improvement. A good rule of thumb is to start your proposal with no more than 7 high-level requirements.
+
+  # Requirements
+  - type: textarea
+    attributes:
+      label: Requirements
+      description: Describe all the requirements to make your idea happen
+      value: |
+        - This proposal will accomplish X
+        - This proposal will accomplish Y
+        - This proposal will accomplish Z
+    validations:
+      required: true
+
+  # Python Version
+  - type: input
+    id: python_version
+    attributes:
+      label: Python Version
+      description: Which version of Python are you using?
+      placeholder: "e.g. 3.11"
+    validations:
+      required: true
+
+  # Additional Comments
+  - type: textarea
+    attributes:
+      label: Comments
+      description: Additional information, comments or screenshots about the feature request.
