@@ -1,0 +1,57 @@
+name: Bug Report
+description: Create a bug report to help improve CR-RL
+labels: [bug]
+body:
+
+  # Description
+  - type: textarea
+    attributes:
+      label: Description
+      description: A clear and concise description of what the issue is.
+    validations:
+      required: true
+
+  # Step To Reproduce
+  - type: textarea
+    attributes:
+      label: Steps To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  # Requirements
+  - type: textarea
+    attributes:
+      label: Requirements
+      description: describe the expected behavior (eg. Fix crash that occurs when...). If left blank, the issue will likely be closed without discussion.
+      value: |
+        - e.g. Fix crash that occurs when...
+    validations:
+      required: true
+
+  # Python Version
+  - type: input
+    id: python_version
+    attributes:
+      label: Python Version
+      description: Which version of Python are you using?
+      placeholder: "e.g. 3.11"
+    validations:
+      required: true
+
+  # Log File
+  - type: textarea
+    attributes:
+      label: Log File
+      description: |
+        Please upload the log file as an attachment (DO NOT COPY OR PASTE THE CONTENTS INTO THIS FIELD)
+      placeholder: |
+        To upload the log, access it from Settings -> About -> Open log location; Or
+        - Select the `debug.log` file from `%localappdata%\Packages\49306atecsolution.FilesUWP_et10x9a9vyk8t\LocalState`
+        - Drag and drop the file to upload as an attachment 
+    validations:
+      required: true
