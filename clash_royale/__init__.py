@@ -7,8 +7,3 @@ register(
      entry_point="clash_royale.envs:ClashRoyaleEnv",
      max_episode_steps=3000,
 )
-
-__all__ = [
-    make.__name__,
-    ClashRoyaleEnv.__name__,
-]
