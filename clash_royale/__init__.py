@@ -1,5 +1,3 @@
-from clash_royale.envs.clash_royale_env import ClashRoyaleEnv
-from gym import make
 from gymnasium.envs.registration import register
 
 register(
