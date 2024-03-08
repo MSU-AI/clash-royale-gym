@@ -11,8 +11,8 @@ version = "0.0.1"
 description = "Clash Royale game engine"
 readme = "README.md"
 dependencies = [
-  "gymnasium==0.29.0",
-  "pygame==2.5.2"
+  "gymnasium~=0.29.0",
+  "pygame~=2.5.2"
 ]
 authors = [
   { name = "MSU AI Club", email = "msuaiclub@gmail.com" },
