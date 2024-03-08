@@ -3,7 +3,7 @@ from gym import make
 from gymnasium.envs.registration import register
 
 register(
-     id="clash_royale/ClashRoyale",
+     id="ClashRoyale",
      entry_point="clash_royale.envs:ClashRoyaleEnv",
-     max_episode_steps=3000,
+     max_episode_steps=14400,
 )
