@@ -2,8 +2,8 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = find:
+[tool.setuptools.packages]
+find = {}
 
 [project]
 name = "clash_royale"
