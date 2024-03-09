@@ -1,9 +1,7 @@
 import numpy as np
-import pygame
 
 import gymnasium as gym
 from gymnasium import spaces
-import clash_royale.envs.game_engine as engine
 
 
 class ClashRoyaleEnv(gym.Env):

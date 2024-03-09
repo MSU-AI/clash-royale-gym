@@ -2,11 +2,11 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["clash_royale"]
+[tool.setuptools.packages]
+find = {}
 
 [project]
-name = "ClashRoyale"
+name = "clash_royale"
 version = "0.0.1"
 description = "Clash Royale game engine"
 readme = "README.md"
