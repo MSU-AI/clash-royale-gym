@@ -11,18 +11,18 @@ class Scheduler:
     For now, it will just store frame_count.
     """
     def __init__(self, fps: int =30):
-        self.fps = fps
-        self.frame = 0
+        self.fps: int = fps
+        self.frame_num: int = 0
     
     def reset(self):
-        self.frame = 0
+        self.frame_num = 0
 
     def step(self, frames: int=1):
-        self.frame += frames
+        self.frame_num += frames
         # possibly check all event timings here
 
     def frame(self) -> int:
-        return self.frame
+        return self.frame_num
     
 class GameScheduler:
     """
@@ -81,3 +81,4 @@ class Stats:
     health: int = 0  # Health of unit
     damage: int = 0  # Damage of unit
     troop_size: int = 0  # Size of trop pixels, determines how troop will be rendered
+    attack_delay: int = 0  # Delay in frames each attack should take

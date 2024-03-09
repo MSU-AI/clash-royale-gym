@@ -8,9 +8,14 @@ This class will move towards a target in some way.
 
 import math
 
-from clash_royale.envs.ngame_engine.entities.entity import Entity
-from clash_royale.envs.ngame_engine.arena import Arena
-from clash_royale.envs.ngame_engine.utils import slope
+from typing import TYPE_CHECKING
+
+from clash_royale.envs.game_engine.entities.entity import Entity
+from clash_royale.envs.game_engine.arena import Arena
+from clash_royale.envs.game_engine.utils import slope
+
+if TYPE_CHECKING:
+    from clash_royale.envs.game_engine.entities.logic_entity import LogicEntity
 
 
 class BaseMovement:
@@ -20,8 +25,8 @@ class BaseMovement:
 
     def __init__(self) -> None:
         
-        self.entity: Entity = None  # Entity we are attached to
-        self.arena: Arena = None  # Arena component to consider
+        self.entity: LogicEntity  # Entity we are attached to
+        self.arena: Arena  # Arena component to consider
 
     def move(self):
         """
@@ -32,7 +37,7 @@ class BaseMovement:
         """
 
         raise NotImplementedError("MUST implement this method!")
-    
+
 
 class SimpleMovement(BaseMovement):
     """
@@ -46,8 +51,8 @@ class SimpleMovement(BaseMovement):
 
         # Determine slopes:
 
-        dx = self.entity.x - self.entity.target.x
-        dy = self.entity.y - self.entity.target.y
+        dx = self.entity.x - self.entity.target_ent.x
+        dy = self.entity.y - self.entity.target_ent.y
 
         # Find angle between entities:
 
@@ -57,7 +62,5 @@ class SimpleMovement(BaseMovement):
 
         speed = self.entity.stats.speed
 
-        self.entity.x += speed * math.cos(angle)
-        self.entity.y += speed * math.sin(angle)
-
-        return super().move()
+        self.entity.x += int(speed * math.cos(angle))
+        self.entity.y += int(speed * math.sin(angle))

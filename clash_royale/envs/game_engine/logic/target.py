@@ -6,10 +6,14 @@ These components describe how targeting is preformed.
 If no entities are selected, then we simply defer targeting to another component.
 """
 
-from clash_royale.envs.ngame_engine.arena import Arena
-from clash_royale.envs.ngame_engine.entities.entity import Entity
-from clash_royale.envs.ngame_engine.utils import distance
+from typing import TYPE_CHECKING
 
+from clash_royale.envs.game_engine.arena import Arena
+from clash_royale.envs.game_engine.entities.entity import Entity
+from clash_royale.envs.game_engine.utils import distance
+
+if TYPE_CHECKING:
+    from clash_royale.envs.game_engine.entities.logic_entity import LogicEntity
 
 class BaseTarget:
     """
@@ -18,8 +22,8 @@ class BaseTarget:
 
     def __init__(self) -> None:
         
-        self.arena: Arena = None  # Arena component to consider
-        self.entity: Entity = None  # Entity we are attached to
+        self.arena: Arena  # Arena component to consider
+        self.entity: LogicEntity  # Entity we are attached to
 
     def entity_distance(self, tentity: Entity) -> float:
         """
@@ -33,11 +37,9 @@ class BaseTarget:
 
         return distance(self.entity.x, self.entity.y, tentity.x, tentity.y)
 
-    def target(self) -> Entity:
+    def target(self):
         """
         Finds a target in the arena, and returns an entity.
-
-        If no target is found, simply return None.
         """
 
         raise NotImplementedError("Must be implemented in child class!")
@@ -51,12 +53,9 @@ class RadiusTarget(BaseTarget):
     and will target the first entity within our radius.
     """
 
-    def target(self) -> Entity:
+    def target(self):
         """
         Finds the first target that is within our radius.
-
-        :return: Entity to target
-        :rtype: Entity
         """
 
         # Iterate over entities:
@@ -65,12 +64,8 @@ class RadiusTarget(BaseTarget):
 
             # Determine if entity is near us:
 
-            if self.entity.sight_range >= distance():
+            if self.entity.stats.sight_range >= self.entity_distance(self.entity.target_ent):
 
-                # We found a target, return:
+                # We found a target, set:
 
-                return ent
-
-        # We found no target:
-
-        return None
+                self.entity.target_ent = ent
