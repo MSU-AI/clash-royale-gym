@@ -1,12 +1,10 @@
 import numpy as np
-import pygame
 
 import gymnasium as gym
 from gymnasium import spaces
-import clash_royale.envs.game_engine as engine
 
 
-class ArenaEnv(gym.Env):
+class ClashRoyaleEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"]}
 
     def __init__(self, fps: int=30, render_mode: str=None):
@@ -71,30 +69,11 @@ class ArenaEnv(gym.Env):
             return self._render_frame()
 
     def _render_frame(self):
-        #if self.window is None and self.render_mode == "human":
-            #pygame.init()
-            #pygame.display.init()
-            #self.window = pygame.display.set_mode(
-            #    (self.window_size_width, self.window_size_height)
-            #)
-        #if self.clock is None and self.render_mode == "human":
-            #self.clock = pygame.time.Clock()
 
         if self.render_mode == "human":
             pass
-            # The following line copies our drawings from `canvas` to the visible window
-            #self.window.blit(canvas, canvas.get_rect())
-            #pygame.event.pump()
-            #pygame.display.update()
-
-            # We need to ensure that human-rendering occurs at the predefined framerate.
-            # The following line will automatically add a delay to keep the framerate stable.
-            #self.clock.tick(self.metadata["render_fps"])
         else:  # rgb_array
             return np.zeros(shape=(self.window_size_width, self.window_size_height, 3), dtype=np.uint8)
-            #return np.transpose(
-            #    np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
-            #)
         
     def close(self):
         pass
