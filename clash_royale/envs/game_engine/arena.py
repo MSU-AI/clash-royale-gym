@@ -6,10 +6,12 @@ The components defined here are probably what end users want to utilize,
 as they will greatly simplify the simulation procedure.
 """
 
-from typing import List
+from typing import TYPE_CHECKING
 
 from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
 
+if TYPE_CHECKING:
+    from clash_royale.envs.game_engine.game_engine import GameEngine
 
 class Arena(EntityCollection):
     """
@@ -31,10 +33,10 @@ class Arena(EntityCollection):
         self.width = width  # Width of arena
         self.height = height  # Height of arena
 
+        self.engine: GameEngine  # Game engine that is managing this arena
+
     def reset(self):
         pass
 
     def step(self):
         pass
-
-    

@@ -2,10 +2,10 @@
 Entities that utilize the logical framework    
 """
 
-from clash_royale.envs.ngame_engine.entities.entity import Entity
-from clash_royale.envs.ngame_engine.logic.attack import BaseAttack
-from clash_royale.envs.ngame_engine.logic.target import BaseTarget
-from clash_royale.envs.ngame_engine.logic.movement import BaseMovement
+from clash_royale.envs.game_engine.entities.entity import Entity
+from clash_royale.envs.game_engine.logic.attack import BaseAttack
+from clash_royale.envs.game_engine.logic.target import BaseTarget
+from clash_royale.envs.game_engine.logic.movement import BaseMovement
 
 
 class LogicEntity(Entity):
@@ -27,9 +27,11 @@ class LogicEntity(Entity):
     def __init__(self) -> None:
         super().__init__()
 
-        self.attack: BaseAttack = None  # Attack component to use
-        self.target: BaseTarget = None  # Target component to use
-        self.movement: BaseMovement = None  # Movement component to use
+        self.attack: BaseAttack  # Attack component to use
+        self.target: BaseTarget  # Target component to use
+        self.movement: BaseMovement  # Movement component to use
+
+        self.target_ent: Entity  # Current entity being considered
 
     def simulate(self):
         """
@@ -38,7 +40,7 @@ class LogicEntity(Entity):
 
         # First, ask for targeting:
 
-        self.target = self.target.target()
+        self.target_ent = self.target.target()
 
         # Next, determine attack:
 
@@ -46,6 +48,6 @@ class LogicEntity(Entity):
 
         # Finally, determine movement:
 
-        self.movement = self.movement.move()
+        self.movement.move()
 
         return super().simulate()

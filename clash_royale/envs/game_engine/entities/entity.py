@@ -2,7 +2,14 @@
 Base entity components    
 """
 
-from clash_royale.envs.ngame_engine.struct import Stats
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from clash_royale.envs.game_engine.struct import Stats
+
+if TYPE_CHECKING:
+    from clash_royale.envs.game_engine.arena import Arena
 
 
 class Entity:
@@ -50,8 +57,31 @@ class Entity:
         self.y: int  = 0  # Y Position
 
         self.stats: Stats = Stats()  # Use default stats unless otherwise stated
-        self.target: Entity = None  # Current entity being considered
-        self.arena = None  # Arena component we are apart of
+        self.collection: Arena  # EntityCollection we are apart of
+
+    @property
+    def running(self) -> bool:
+        """
+        Determines if this entity is running.
+
+        We simply check the state to see if we are started.
+
+        :return: True if running, False if not
+        :rtype: bool
+        """
+
+        return self.state == Entity.STARTED
+
+    @property
+    def arena(self) -> EntityCollection:
+        """
+        Alias for 'collection'
+
+        :return: Collection we are apart of
+        :rtype: EntityCollection
+        """
+
+        return self.collection
 
     def load(self):
         """
@@ -211,7 +241,7 @@ class EntityCollection(object):
 
             # Load error occurred! Raise an exception!
 
-            raise Exception("entity load() method failed! Not loading: {}".format(entity.name), e)
+            raise Exception("entity load() method failed! Not loading: {}".format(entity), e)
 
         # Add the entity to our collection:
 
@@ -250,7 +280,7 @@ class EntityCollection(object):
 
             # Stop the entity, call the stop() method:
 
-            self.entity.stop()
+            entity.stop()
 
         # Now, run the unload method:
 
@@ -262,7 +292,7 @@ class EntityCollection(object):
 
             # Raise an exception of our own:
 
-            raise Exception("entity failed to unload! Unloading: {}".format(entity.name), e)
+            raise Exception("entity failed to unload! Unloading: {}".format(entity), e)
 
         # Unload the entity:
 
@@ -298,7 +328,7 @@ class EntityCollection(object):
 
             self._unload_entity(entity)
 
-            raise Exception("entity stop() method failed! Unloading: {}".format(entity.name), e)
+            raise Exception("entity stop() method failed! Unloading: {}".format(entity), e)
 
         # Return the entity:
 
@@ -334,11 +364,11 @@ class EntityCollection(object):
 
             # Raise an exception:
 
-            raise Exception("entity start() method failed! Unloading: {}".format(entity.name), e)
+            raise Exception("entity start() method failed! Unloading: {}".format(entity), e)
 
         # Return the entity:
 
-        return
+        return entity
 
     def restart_entity(self, entity: Entity) -> Entity:
         """
@@ -381,7 +411,7 @@ class EntityCollection(object):
 
         self.running = True
 
-        # Start all connected entitys:
+        # Start all connected entity's:
 
         for mod in self.entitys:
 
@@ -475,7 +505,3 @@ class EntityCollection(object):
         # Update our stats:
 
         self.num_loaded -= 1
-
-        # Remove ourselves from the entity:
-
-        mod.collection = None
