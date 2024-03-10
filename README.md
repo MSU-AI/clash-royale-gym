@@ -28,6 +28,7 @@
 ## Description
 
 Clash Royale as a Gymnasium environment.
+Supports Python versions 3.10 and above.
 
 ### Installation
 
