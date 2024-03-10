@@ -1,4 +1,3 @@
-```md
 <!-- 
 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
 I ACKNOWLEDGE THE FOLLOWING BEFORE PROCEEDING:
@@ -24,5 +23,3 @@ How did you test these changes?
 
 **Screenshots (optional)**
 Add screenshots here.
-
-```
