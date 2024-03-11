@@ -66,7 +66,7 @@ class GameEngine:
         Arena.reset() method missing.
         Player.reset() method missing.
         """
-        
+
         self.arena.reset()
         self.player1.reset(elixir=5)
         self.player2.reset(elixir=5)
@@ -84,7 +84,7 @@ class GameEngine:
         arena.get_entities() missing
         """
 
-        entities = self.arena.get_entities()
+        entities: List[Entity] = self.arena.get_entities()
         canvas = pygame.Surface(size=self.resolution)
 
         #rendering logic goes here...
