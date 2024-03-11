@@ -4,7 +4,7 @@ Base entity components
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from clash_royale.envs.game_engine.struct import Stats
 
@@ -209,7 +209,7 @@ class EntityCollection(object):
     def __init__(self) -> None:
 
         # entity storage component
-        self.entities: list[Entity] = []
+        self.entities: List[Entity] = []
 
         self.running: bool = False  # Value determining if we are running
         self.num_loaded: int = 0  # Number of entity's currently loaded
@@ -384,9 +384,9 @@ class EntityCollection(object):
         then the entity will be forcefully unloaded!
 
         :param entity: entity to restart
-        :type entity: Baseentity
+        :type entity: Entity
         :return: The entity we restarted
-        :rtype: Baseentity
+        :rtype: Entity
         """
 
         # Stop the entity
@@ -401,11 +401,11 @@ class EntityCollection(object):
 
         return entity
 
-    def start(self):
+    def start(self) -> None:
         """
         Method used to start this entityCollection.
 
-        We set our running status and start all loaded entitys.
+        We set our running status and start all loaded entities.
         """
 
         # Set our running status:
@@ -414,7 +414,7 @@ class EntityCollection(object):
 
         # Start all connected entity's:
 
-        for mod in self.entitys:
+        for mod in self.entities:
 
             # Determine if this entity needs starting:
 
