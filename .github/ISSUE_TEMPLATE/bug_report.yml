@@ -47,8 +47,8 @@ body:
   - type: textarea
     attributes:
       label: Screenshots
-      description: |
-        Upload any relevant pictures/screenshots here
+      description: Upload any relevant pictures/screenshots here
       placeholder: |
+        Relevant pictures
     validations:
       required: false
