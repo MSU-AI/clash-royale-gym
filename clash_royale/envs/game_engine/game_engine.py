@@ -36,11 +36,11 @@ class GameEngine:
     """
 
     def __init__(self,
-                 width: int =18, 
-                 height: int=32, 
+                 deck1: List[str],
+                 deck2: List[str],
+                 width: int=18,
+                 height: int=32,
                  resolution: Tuple[int, int] =(128, 128),
-                 deck1: List[str] =['barbarian'] * 8,
-                 deck2: List[str] =['barbarian'] * 8,
                  ) -> None:
         """
         The game_engine should be initialized with settings such as resolution
