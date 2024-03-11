@@ -38,7 +38,7 @@ class BaseTarget:
 
         return distance(self.entity.x, self.entity.y, target_entity.x, target_entity.y)
 
-    def target(self):
+    def target(self) -> None:
         """
         Finds a target in the arena, and returns an entity.
         """
@@ -54,7 +54,7 @@ class RadiusTarget(BaseTarget):
     and will target the first entity within our radius.
     """
 
-    def target(self):
+    def target(self) -> None:
         """
         Finds the first target that is within our radius.
         """
@@ -65,8 +65,8 @@ class RadiusTarget(BaseTarget):
 
             # Determine if entity is near us:
 
-            if self.entity.stats.sight_range >= self.entity_distance(self.entity.target_ent):
+            if self.entity.stats.sight_range >= self.entity_distance(self.entity.target_entity):
 
                 # We found a target, set:
 
-                self.entity.target_ent = ent
+                self.entity.target_entity = ent
