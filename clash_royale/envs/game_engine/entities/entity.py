@@ -438,7 +438,7 @@ class EntityCollection(object):
 
         self.running = False
 
-        for mod in self.entitys:
+        for mod in self.entities:
 
             # Determine if this entity needs stopping:
 
@@ -450,7 +450,7 @@ class EntityCollection(object):
 
         return
 
-    def _load_entity(self, mod: Entity):
+    def _load_entity(self, mod: Entity) -> None:
         """
         Adds the entity to our collection. 
 
@@ -458,16 +458,11 @@ class EntityCollection(object):
         be worked with by end users!
 
         :param mod: entity to add
-        :type mod: Baseentity
+        :type mod: Entity
         """
 
         # Create the data to be stored:
-
-        temp = (mod,)
-
-        # Add the entity to the collection:
-
-        self.entitys = self.entitys + temp
+        self.entities.append(mod)
 
         # Update our stats:
 
