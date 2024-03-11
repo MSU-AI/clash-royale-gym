@@ -52,7 +52,7 @@ necessary to access the environment.
 2. Some sample code
 ```python
 # WARNING: This code is subject to change and may be OUTDATED!
-import clash-royale
+import clash_royale
 import gymnasium
 env = gymnasium.make("clash-royale", render_mode="rgb_array")
 
