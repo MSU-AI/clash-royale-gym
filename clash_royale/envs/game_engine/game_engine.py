@@ -4,10 +4,9 @@ High-level components for managing the simulation
 This file contains components that are intended to manage and preform the simulation.
 The components defined here are probably what end users want to utilize,
 as they will greatly simplify the simulation procedure.
-
-How should we decide order? Length Width Height?
-I think LxHxCard.
 """
+
+from __future__ import annotations
 
 from typing import List, Tuple
 import numpy as np
@@ -16,7 +15,7 @@ import pygame
 
 from clash_royale.envs.game_engine.entities.entity import EntityCollection
 from clash_royale.envs.game_engine.arena import Arena
-from clash_royale.envs.game_engine.struct import Scheduler, DefaultScheduler
+from clash_royale.envs.game_engine.struct import Scheduler, GameScheduler, DefaultScheduler
 from clash_royale.envs.game_engine.player import Player
 
 
@@ -48,16 +47,16 @@ class GameEngine:
         any specific actual game, that will be handled in reset.
         """
 
-        self.width = width  # Width of arena
-        self.height = height  # Height of arena
-        self.resolution = resolution
+        self.width: int = width  # Width of arena
+        self.height: int = height  # Height of arena
+        self.resolution: Tuple[int, int] = resolution
 
-        self.arena = Arena(width=self.width, height=self.height)
-        self.player1 = Player(deck1)
-        self.player2 = Player(deck2)
+        self.arena: Arena = Arena(width=self.width, height=self.height)
+        self.player1: Player = Player(deck1)
+        self.player2: Player = Player(deck2)
 
-        self.scheduler = Scheduler(fps=30) # counting frames
-        self.game_scheduler = DefaultScheduler(self.scheduler) # determining elixir etc.
+        self.scheduler: Scheduler = Scheduler(fps=30) # counting frames
+        self.game_scheduler: GameScheduler = DefaultScheduler(self.scheduler) # determining elixir etc.
 
     def reset(self) -> None:
         """
@@ -67,6 +66,7 @@ class GameEngine:
         Arena.reset() method missing.
         Player.reset() method missing.
         """
+        
         self.arena.reset()
         self.player1.reset(elixir=5)
         self.player2.reset(elixir=5)
