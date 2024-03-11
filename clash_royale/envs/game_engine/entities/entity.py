@@ -429,7 +429,7 @@ class EntityCollection(object):
         Method used to stop this entityCollection.
 
         We set our running status,
-        and stop all started entitys.
+        and stop all started entities.
 
         Sub-classes should put stop code here to end their relevant components.
         """
