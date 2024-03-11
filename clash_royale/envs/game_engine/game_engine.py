@@ -14,13 +14,13 @@ import numpy as np
 import numpy.typing as npt
 import pygame
 
-from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
+from clash_royale.envs.game_engine.entities.entity import EntityCollection
 from clash_royale.envs.game_engine.arena import Arena
 from clash_royale.envs.game_engine.struct import Scheduler, DefaultScheduler
 from clash_royale.envs.game_engine.player import Player
 
 
-class GameEngine(EntityCollection):
+class GameEngine:
     """
     Arena - High-level simulation component
 
@@ -35,7 +35,7 @@ class GameEngine(EntityCollection):
     TODO: Need to figure out frame independent timekeeping  
     """
 
-    def __init__(self, 
+    def __init__(self,
                  width: int =18, 
                  height: int=32, 
                  resolution: Tuple[int, int] =(128, 128),
@@ -46,10 +46,8 @@ class GameEngine(EntityCollection):
         The game_engine should be initialized with settings such as resolution
         and framerate, this shouldn't be used to initialize
         any specific actual game, that will be handled in reset.
-
-        Arena() Constructor missing
-        Player() Constructor missing
         """
+
         self.width = width  # Width of arena
         self.height = height  # Height of arena
         self.resolution = resolution
