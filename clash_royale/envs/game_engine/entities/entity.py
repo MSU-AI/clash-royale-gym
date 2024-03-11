@@ -492,3 +492,4 @@ class EntityCollection(object):
         # Update our stats:
 
         self.num_loaded -= 1
+
