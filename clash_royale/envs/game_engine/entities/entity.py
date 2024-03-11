@@ -37,11 +37,11 @@ class Entity:
     Created -> Loaded +> Started -> Running -> Stopped +> Unloaded
 
     * Created - Entity is instantiated
-    * Loaded - Entity is loaded into a collection, relevant load code is ran
-    * Started - Entity is started, relevant start code is ran 
+    * Loaded - Entity is loaded into a collection, load code is ran
+    * Started - Entity is started, start code is ran 
     * Running - Entity is running and working in some way
-    * Stopped - Entity is stopped, relevant stop code is ran and entity is no longer working with data
-    * Unloaded - Entity is unloaded, relevant unload code is ran
+    * Stopped - Entity is stopped, stop code is ran and entity is no longer working with data
+    * Unloaded - Entity is unloaded, unload code is ran
     """
 
     CREATED: int = 0
@@ -458,7 +458,7 @@ class EntityCollection(object):
         be worked with by end users!
 
         :param entity: entity to add
-        :type mod: Entity
+        :type entity: Entity
         """
 
         # Create the data to be stored:
@@ -471,7 +471,7 @@ class EntityCollection(object):
 
         # Attach the collection to the entity:
 
-        mod.collection = self
+        entity.collection = self
 
     def _unload_entity(self, entity: Entity):
         """
@@ -492,4 +492,3 @@ class EntityCollection(object):
         # Update our stats:
 
         self.num_loaded -= 1
-
