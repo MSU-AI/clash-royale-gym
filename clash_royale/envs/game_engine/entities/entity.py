@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from clash_royale.envs.game_engine.struct import Stats
 
 if TYPE_CHECKING:
+    # Only import for typechecking to prevent circular dependency
     from clash_royale.envs.game_engine.arena import Arena
 
 
@@ -83,7 +84,7 @@ class Entity:
 
         return self.collection
 
-    def load(self):
+    def load(self) -> None:
         """
         Method called when this entity is loaded.
 
@@ -100,21 +101,21 @@ class Entity:
 
         self.state = Entity.LOADED
 
-    def unload(self):
+    def unload(self) -> None:
         """
         Method called when this entity is unloaded.
 
         This method is invoked when the entity is unloaded from a high level component.
         When this method is called,
         it is reasonable to assume that this entity is not going to be used again.
-        entitys can use this a a sign that their work is done.
+        entities can use this a a sign that their work is done.
 
         It is recommended to make any final, permanent changes once this method is called.
         """
 
         self.state = Entity.UNLOADED
 
-    def start(self):
+    def start(self) -> None:
         """
         Method called when this entity is started.
 
@@ -130,7 +131,7 @@ class Entity:
 
         self.state = Entity.STARTED
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Method called when this entity is stopped.
 
@@ -151,7 +152,7 @@ class Entity:
 
         self.state = Entity.STOPPED
 
-    def render(self):
+    def render(self) -> None:
         """
         Asks this entity to render itself!
 
@@ -164,7 +165,7 @@ class Entity:
 
         pass
 
-    def simulate(self):
+    def simulate(self) -> None:
         """
         Preforms entity simulation for this frame.
 
@@ -208,11 +209,11 @@ class EntityCollection(object):
     def __init__(self) -> None:
 
         # entity storage component
-        self.entities = []
+        self.entities: list[Entity] = []
 
-        self.running = False  # Value determining if we are running
-        self.num_loaded = 0  # Number of entity's currently loaded
-        self.max_loaded = 0  # Max number of entity's loaded
+        self.running: bool = False  # Value determining if we are running
+        self.num_loaded: int = 0  # Number of entity's currently loaded
+        self.max_loaded: int = 0  # Max number of entity's loaded
 
     def load_entity(self, entity: Entity) -> Entity:
         """
@@ -241,7 +242,7 @@ class EntityCollection(object):
 
             # Load error occurred! Raise an exception!
 
-            raise Exception("entity load() method failed! Not loading: {}".format(entity), e)
+            raise Exception(f"entity load() method failed! Not loading: {entity}", e)
 
         # Add the entity to our collection:
 
@@ -292,7 +293,7 @@ class EntityCollection(object):
 
             # Raise an exception of our own:
 
-            raise Exception("entity failed to unload! Unloading: {}".format(entity), e)
+            raise Exception(f"entity failed to unload! Unloading: {entity}", e)
 
         # Unload the entity:
 
@@ -328,7 +329,7 @@ class EntityCollection(object):
 
             self._unload_entity(entity)
 
-            raise Exception("entity stop() method failed! Unloading: {}".format(entity), e)
+            raise Exception(f"entity stop() method failed! Unloading: {entity}", e)
 
         # Return the entity:
 
@@ -364,7 +365,7 @@ class EntityCollection(object):
 
             # Raise an exception:
 
-            raise Exception("entity start() method failed! Unloading: {}".format(entity), e)
+            raise Exception(f"entity start() method failed! Unloading: {entity}", e)
 
         # Return the entity:
 
