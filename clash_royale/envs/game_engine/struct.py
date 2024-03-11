@@ -13,7 +13,7 @@ class Scheduler:
     def __init__(self, fps: int =30):
         self.fps: int = fps
         self.frame_num: int = 0
-    
+
     def reset(self):
         self.frame_num = 0
 
@@ -23,21 +23,19 @@ class Scheduler:
 
     def frame(self) -> int:
         return self.frame_num
-    
+
 class GameScheduler:
     """
     Template class for game scheduling
     """
     def __init__(self, scheduler: Scheduler, fps: int=30) -> None:
-        self.scheduler = scheduler
+        self.scheduler: Scheduler = scheduler
+        self.fps: int = fps
 
 class DefaultScheduler(GameScheduler):
     """
     Class for default 1v1 game scheduling
     """
-    def __init__(self, scheduler: Scheduler, fps: int=30) -> None:
-        super.__init__(scheduler, fps)
-
     def elixir_rate(self) -> float:
         pass
 
@@ -47,7 +45,7 @@ class DefaultScheduler(GameScheduler):
         ex: Game is over, double elixir, overtime, etc.
         """
         pass
-    
+
 
 
 @dataclasses.dataclass(slots=True)
