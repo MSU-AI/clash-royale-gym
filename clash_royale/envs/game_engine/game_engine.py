@@ -99,9 +99,9 @@ class GameEngine:
         if action is None:
             return
 
-        assert(action[0] >= 0 and action[0] < self.width)
-        assert(action[1] >= 0 and action[1] < self.height)
-        assert(action[2] >= 0 and action[2] < 4)
+        assert action[0] >= 0 and action[0] < self.width
+        assert action[1] >= 0 and action[1] < self.height
+        assert action[2] >= 0 and action[2] < 4
 
         if player_id == 0:
             curr_player = self.player1
@@ -109,7 +109,7 @@ class GameEngine:
             curr_player = self.player2
 
         card: Card = curr_player.hand[action[2]]
-        assert(card.elixir <= curr_player.elixir)
+        assert card.elixir <= curr_player.elixir
 
         self.arena.play_card(action[0], action[1], card)
         curr_player.play_card(action[2])
@@ -121,7 +121,7 @@ class GameEngine:
         """
 
         # update elixir first, order TBD.
-        elixir_rate = self.game_scheduler.elixir_rate()
+        elixir_rate: float = self.game_scheduler.elixir_rate()
         self.player1.step(elixir_rate, frames)
         self.player2.step(elixir_rate, frames)
 
