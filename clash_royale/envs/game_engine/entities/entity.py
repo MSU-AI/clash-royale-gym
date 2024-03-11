@@ -424,7 +424,7 @@ class EntityCollection(object):
 
                 self.start_entity(mod)
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Method used to stop this entityCollection.
 
@@ -473,7 +473,7 @@ class EntityCollection(object):
 
         entity.collection = self
 
-    def _unload_entity(self, entity: Entity):
+    def _unload_entity(self, entity: Entity) -> None:
         """
         Low-level method for unloading entities from the list.
 
