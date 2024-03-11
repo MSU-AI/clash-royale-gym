@@ -8,82 +8,49 @@ class Player():
 
     This class represents the current state of players' cards, and the logic of playing cards.
     Handle elixir and legal cards.
-
     """
+
     def __init__(self,
-                 deck: list[type[Card]]) -> None:
-        
+                 deck: list[Card]) -> None:
+        """
+        Player component is initialized with deck of string, 
+        specifying the cards' names in the deck.
         """
         
-        Player component is initialized with deck of string, specifiying the cards' names in the deck.
-
-        """
-
-        self.elixir: int = 5
+        self.elixir: int = 0
 
         random.shuffle(deck)
         self.deck: Queue = Queue(maxsize = 8)
         for card in deck:
             self.deck.put(card, block = False)
-        
-        self.hand: list[type[Card]] = [self.deck.get(block = False) for i in range(4)]
-        self.next: Card = self.get(block = False)
+
+        self.hand: list[Card] = [self.deck.get(block = False) for i in range(4)]
+        self.next: Card = self.deck.get(block = False)
 
     def reset(self, elixir: int = 5) -> None:
-
         """
-        
-        This method is used to delete information of Player class in previous matches.
-
+        This method is used to reset Player class.
         """
 
         self.elixir: int = elixir
 
+    def get_pseudo_legal_cards(self) -> list[Card]:
+        """
+        This method is used to get all cards that can be 
+        played given the current amount of elixir.
         """
 
-        One way of reseting the player class with the same deck and without calling __init__ again when a new match starts.
-
-        for card in self.hand:
-            self.hand.put(card, block = False)
-        self.hand.put(self.next, block = False)
-        random.shuffle(self.deck)
-
-        self.hand: list[type[Card]] = [self.deck.get(block = False) for i in range(4)]
-        self.next: Card = self.get(block = False)
-
-        """
-
-        """
-
-        Reseting all variables to None to reduce the unexpected side effects
-
-        """
-
-        self.deck: None = None
-        self.hand: None = None
-        self.next: None = None
-
-    def get_pseudo_legal_cards(self, current_elixir: float) -> list[type[Card]]:
-        
-        """
-        
-        This method is used to get all cards that can be played given the current amount of elixir.
-
-        """
-
-        legal_cards: list[type[Card]] = []
+        legal_cards: list[Card] = []
         for card in self.hand:
             if card.elixir <= self.elixir:
                 legal_cards.append(card)
         return legal_cards
     
     def step(self, 
-             elixir_rate: float, 
-             fps: int, 
+             elixir_rate: float,
+             fps: int,
              frame: int) -> None:
-
         """
-        
         Called with the value of elixir_rate and frame to update the elixir of player after 'frame' number of frames
         to better customize the elixir_rate that can vary depends on game modes.
 
