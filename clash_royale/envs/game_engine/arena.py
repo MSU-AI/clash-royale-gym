@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from clash_royale.envs.game_engine.entities.entity import EntityCollection
 
 if TYPE_CHECKING:
+    # Only import for typechecking to prevent circular dependency
     from clash_royale.envs.game_engine.game_engine import GameEngine
 
 class Arena(EntityCollection):
@@ -29,14 +30,16 @@ class Arena(EntityCollection):
     """
 
     def __init__(self, width: int =8, height: int=18) -> None:
-        
-        self.width = width  # Width of arena
-        self.height = height  # Height of arena
+
+        super().__init__()
+
+        self.width: int = width  # Width of arena
+        self.height: int = height  # Height of arena
 
         self.engine: GameEngine  # Game engine that is managing this arena
 
-    def reset(self):
+    def reset(self) -> None:
         pass
 
-    def step(self):
+    def step(self) -> None:
         pass
