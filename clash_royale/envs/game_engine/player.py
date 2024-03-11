@@ -1,6 +1,9 @@
+from typing import List
+
 from queue import Queue
-from clash_royale.envs.game_engine.card import Card
 import random
+
+from clash_royale.envs.game_engine.card import Card
 
 class Player():
     """
@@ -11,12 +14,12 @@ class Player():
     """
 
     def __init__(self,
-                 deck: list[Card]) -> None:
+                 deck: List[Card]) -> None:
         """
         Player component is initialized with deck of string, 
         specifying the cards' names in the deck.
         """
-        
+
         self.elixir: int = 0
 
         random.shuffle(deck)

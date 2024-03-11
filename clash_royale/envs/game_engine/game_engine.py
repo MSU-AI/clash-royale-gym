@@ -40,7 +40,7 @@ class GameEngine:
                  deck2: List[str],
                  width: int=18,
                  height: int=32,
-                 resolution: Tuple[int, int] =(128, 128),
+                 resolution: Tuple[int, int]=(128, 128),
                  ) -> None:
         """
         The game_engine should be initialized with settings such as resolution
