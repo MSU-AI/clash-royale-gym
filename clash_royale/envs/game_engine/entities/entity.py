@@ -450,19 +450,19 @@ class EntityCollection(object):
 
         return
 
-    def _load_entity(self, mod: Entity) -> None:
+    def _load_entity(self, entity: Entity) -> None:
         """
         Adds the entity to our collection. 
 
         This low-level method is not intended to
         be worked with by end users!
 
-        :param mod: entity to add
+        :param entity: entity to add
         :type mod: Entity
         """
 
         # Create the data to be stored:
-        self.entities.append(mod)
+        self.entities.append(entity)
 
         # Update our stats:
 
@@ -473,30 +473,21 @@ class EntityCollection(object):
 
         mod.collection = self
 
-    def _unload_entity(self, mod: Entity):
+    def _unload_entity(self, entity: Entity):
         """
-        Low-level method for unloading entitys from the list.
+        Low-level method for unloading entities from the list.
 
         We do not call any methods or work with the entity in any way
         other than removing it from the data structure.
 
-        :param mod: The entity in question to remove
-        :type mod: Baseentity
+        :param entity: The entity in question to remove
+        :type entity: Entity
         :param key: Key of the entity to remove
         :type key: str
         """
 
-        # Convert the tuple into a list:
-
-        temp = list(self.entitys)
-
         # Remove the offending entity:
-
-        temp.remove(mod)
-
-        # Set our list:
-
-        self.entitys = tuple(temp)
+        self.entities.remove(entity)
 
         # Update our stats:
 
