@@ -21,7 +21,7 @@ body:
         2.
         3.
     validations:
-      required: true
+      required: false
 
   # Requirements
   - type: textarea
@@ -41,17 +41,14 @@ body:
       description: Which version of Python are you using?
       placeholder: "e.g. 3.11"
     validations:
-      required: true
+      required: false
 
-  # Log File
+  # Screenshots
   - type: textarea
     attributes:
-      label: Log File
-      description: |
-        Please upload the log file as an attachment (DO NOT COPY OR PASTE THE CONTENTS INTO THIS FIELD)
+      label: Screenshots
+      description: Upload any relevant pictures/screenshots here
       placeholder: |
-        To upload the log, access it from Settings -> About -> Open log location; Or
-        - Select the `debug.log` file from `%localappdata%\Packages\49306atecsolution.FilesUWP_et10x9a9vyk8t\LocalState`
-        - Drag and drop the file to upload as an attachment 
+        Relevant pictures
     validations:
-      required: true
+      required: false
