@@ -13,10 +13,10 @@ import numpy as np
 import numpy.typing as npt
 import pygame
 
-from clash_royale.envs.game_engine.entities.entity import EntityCollection
 from clash_royale.envs.game_engine.arena import Arena
 from clash_royale.envs.game_engine.struct import Scheduler, GameScheduler, DefaultScheduler
 from clash_royale.envs.game_engine.player import Player
+from clash_royale.envs.game_engine.card import Card
 
 
 class GameEngine:
@@ -98,17 +98,17 @@ class GameEngine:
         """
         if action is None:
             return
-        
+
         assert(action[0] >= 0 and action[0] < self.width)
         assert(action[1] >= 0 and action[1] < self.height)
         assert(action[2] >= 0 and action[2] < 4)
-        
+
         if player_id == 0:
             curr_player = self.player1
         else:
             curr_player = self.player2
 
-        card = curr_player.hand[action[2]]
+        card: Card = curr_player.hand[action[2]]
         assert(card.elixir <= curr_player.elixir)
 
         self.arena.play_card(action[0], action[1], card)

@@ -6,5 +6,6 @@ class Card():
     '''
 
     def __init__(self, elixir: int):
+        
+        self.elixir: int = elixir
         pass
-    

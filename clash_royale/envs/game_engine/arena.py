@@ -9,6 +9,7 @@ as they will greatly simplify the simulation procedure.
 from typing import TYPE_CHECKING
 
 from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
+from clash_royale.envs.game_engine.card import Card
 
 if TYPE_CHECKING:
     # Only import for typechecking to prevent circular dependency
@@ -45,4 +46,7 @@ class Arena(EntityCollection):
         pass
 
     def get_entities(self) -> List[Entity]:
+        pass
+
+    def play_card(self, x: int, y: int, card: Card) -> None:
         pass
