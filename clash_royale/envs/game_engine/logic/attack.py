@@ -28,7 +28,7 @@ class BaseAttack:
     """
 
     def __init__(self) -> None:
-        
+
         self.entity: LogicEntity  # Entity we are managing
         self.arena: Arena  # Arena we are apart of
 
@@ -59,7 +59,7 @@ class BaseAttack:
 
         # Determine if we have a target:
 
-        if self.entity.target_ent is not None:
+        if self.entity.target_entity is not None:
 
             # Determine if our delay has passed:
 
@@ -67,14 +67,14 @@ class BaseAttack:
 
                 # Determine if entity is within range:
 
-                if self.entity.stats.attack_range <= self.entity_distance(self.entity.target_ent):
+                if self.entity.stats.attack_range <= self.entity_distance(self.entity.target_entity):
 
                     # Within range, return True:
 
                     return True
-                
+
         # Otherwise, return False:
-                
+
         return False
 
     def attack(self):
@@ -105,4 +105,4 @@ class SingleAttack(BaseAttack):
 
             # Otherwise, preform an attack:
 
-            self.entity.target_ent.stats.health -= self.entity.stats.damage
+            self.entity.target_entity.stats.health -= self.entity.stats.damage
