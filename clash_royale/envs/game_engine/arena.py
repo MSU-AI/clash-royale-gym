@@ -8,7 +8,7 @@ as they will greatly simplify the simulation procedure.
 
 from typing import TYPE_CHECKING
 
-from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
+from clash_royale.envs.game_engine.entities.entity import EntityCollection
 
 if TYPE_CHECKING:
     from clash_royale.envs.game_engine.game_engine import GameEngine

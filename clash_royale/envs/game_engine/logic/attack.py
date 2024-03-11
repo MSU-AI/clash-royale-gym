@@ -15,6 +15,7 @@ from clash_royale.envs.game_engine.entities.entity import Entity
 from clash_royale.envs.game_engine.utils import distance
 
 if TYPE_CHECKING:
+    # Only import for typechecking to prevent circular dependency
     from clash_royale.envs.game_engine.entities.logic_entity import LogicEntity
 
 
