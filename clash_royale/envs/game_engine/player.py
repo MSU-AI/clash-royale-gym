@@ -76,19 +76,17 @@ class Player():
 
         self.deck.put(self.hand[card_index], block = False)
         self.hand[card_index] = self.next
-        self.next: Card = self.deck.get(block = False)
-
+        self.next = self.deck.get(block = False)
 
     def play_card(self, card_index: int) -> None:
 
         """
-        
-        Called with the index of cards in hand to update the state of available cards, next cards, and elixir.
+        Called with the index of cards in hand to update the state of 
+        available cards, next cards, and elixir.
         Should be called with the initial rendering of entity.
-
         """
 
-        assert(card_index < 4)
+        assert card_index >= 0 and card_index < 4
         elixir_cost: float = self.hand[card_index].elixir_cost
         assert(elixir_cost <= self.elixir)
         self.pop(card_index)
