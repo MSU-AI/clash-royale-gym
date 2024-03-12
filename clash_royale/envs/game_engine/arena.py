@@ -8,6 +8,9 @@ as they will greatly simplify the simulation procedure.
 
 from typing import TYPE_CHECKING
 
+import numpy as np
+import numpy.typing as npt
+
 from clash_royale.envs.game_engine.entities.entity import Entity, EntityCollection
 from clash_royale.envs.game_engine.card import Card
 
@@ -50,3 +53,6 @@ class Arena(EntityCollection):
 
     def play_card(self, x: int, y: int, card: Card) -> None:
         pass
+
+    def get_placement_mask(self) -> npt.NDArray[bool]:
+        return np.ones(shape=(32, 18), dtype=bool)
