@@ -83,7 +83,7 @@ def draw_troop(canvas, troop, health_bar_color, pix_square_size):
                     TROOP_HEALTH[troop_type],
                     pix_square_size)
     
-class ArenaEnv(gym.Env):
+class ClashRoyaleEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 16}
 
     def __init__(self, render_mode=None, width=8, height=18):
