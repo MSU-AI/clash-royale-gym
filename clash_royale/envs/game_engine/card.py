@@ -5,7 +5,6 @@ class Card():
     This class is created for Player class to refer to statistics of cards.
     '''
 
-    def __init__(self, elixir: int):
-        
+    def __init__(self, elixir: int) -> None:
         self.elixir: int = elixir
         pass
