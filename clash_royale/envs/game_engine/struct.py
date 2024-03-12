@@ -46,11 +46,12 @@ class DefaultScheduler(GameScheduler):
         ex: Game is over, double elixir, overtime, etc.
         """
         return 0
-    
+
     def is_game_over(self) -> bool:
         return False
 
-
+    def is_overtime(self) -> bool:
+        return False
 
 @dataclasses.dataclass(slots=True)
 class Stats:
