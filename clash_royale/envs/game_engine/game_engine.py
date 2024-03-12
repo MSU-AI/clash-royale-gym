@@ -169,20 +169,17 @@ class GameEngine:
         """
         Returns side won, otherwise returns -1.
         """
-        player1_val = self.arena.tower_count(0)
-        player2_val = self.arena.tower_count(1)
+        player1_val: int = self.arena.tower_count(0)
+        player2_val: int = self.arena.tower_count(1)
         if player1_val == player2_val:
             player1_val = self.arena.lowest_tower_health(0)
             player2_val = self.arena.lowest_tower_health(1)
 
         if player1_val > player2_val:
             return 1
-        
+
         if player2_val > player1_val:
             return 0
 
         if player1_val == player2_val:
             return -1
-        
-    
-

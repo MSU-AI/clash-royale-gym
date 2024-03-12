@@ -59,3 +59,6 @@ class Arena(EntityCollection):
 
     def tower_count(self, player_id: int) -> int:
         return 0
+
+    def lowest_tower_health(self, player_id: int) -> int:
+        return 0
