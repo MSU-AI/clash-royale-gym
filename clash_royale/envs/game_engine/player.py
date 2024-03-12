@@ -35,11 +35,12 @@ class Player():
     def reset(self, elixir: int = 5) -> None:
         """
         This method is used to reset Player class.
+        TODO: implement deck shuffling
         """
 
         self.elixir: int = elixir
 
-    def get_pseudo_legal_cards(self) -> list[Card]:
+    def get_pseudo_legal_cards(self) -> List[Card]:
         """
         This method is used to get all cards that can be 
         played given the current amount of elixir.
