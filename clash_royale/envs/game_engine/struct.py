@@ -2,6 +2,8 @@
 Various structures to be utilized   
 """
 
+from __future__ import annotations
+
 import dataclasses
 
 class Scheduler:
@@ -28,6 +30,7 @@ class GameScheduler:
     """
     Template class for game scheduling
     """
+    
     def __init__(self, scheduler: Scheduler, fps: int=30) -> None:
         self.scheduler: Scheduler = scheduler
         self.fps: int = fps
