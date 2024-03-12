@@ -169,7 +169,7 @@ class GameEngine:
         """
         Returns side won, otherwise returns -1.
         """
-        
+
         player1_val: int = self.arena.tower_count(0)
         player2_val: int = self.arena.tower_count(1)
         if player1_val == player2_val:

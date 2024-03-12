@@ -57,7 +57,7 @@ class Player():
              elixir_rate: float,
              frames: int=1) -> None:
         """
-        Called with the value of elixir_rate and frame to update the elixir of player after 'frame' number of frames
+        Called with the value of elixir_rate and frame to update the elixir of player
         to better customize the elixir_rate that can vary depends on game modes.
         """
 
@@ -72,7 +72,8 @@ class Player():
 
         """
 
-        assert(card_index < 4)
+        assert card_index >= 0 and card_index < 4
+
         self.deck.put(self.hand[card_index], block = False)
         self.hand[card_index] = self.next
         self.next: Card = self.deck.get(block = False)
