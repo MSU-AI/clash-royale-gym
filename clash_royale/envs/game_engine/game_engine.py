@@ -138,7 +138,7 @@ class GameEngine:
         """
         actions = np.zeros(shape=(32, 18, 4), dtype=np.float64)
 
-        hand: List[Card]
+        hand: List[int]
         if player_id == 0:
             hand = self.player1.get_pseudo_legal_cards()
         else:

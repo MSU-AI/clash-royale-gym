@@ -21,7 +21,7 @@ class Player():
         specifying the cards' names in the deck.
         """
 
-        self.elixir: int = 0
+        self.elixir: float = 0
         self.fps: int = fps
 
         random.shuffle(deck)
@@ -40,16 +40,16 @@ class Player():
 
         self.elixir: float = elixir
 
-    def get_pseudo_legal_cards(self) -> List[Card]:
+    def get_pseudo_legal_cards(self) -> List[int]:
         """
         This method is used to get all cards that can be 
         played given the current amount of elixir.
         """
 
-        legal_cards: list[Card] = []
-        for card in self.hand:
-            if card.elixir <= self.elixir:
-                legal_cards.append(card)
+        legal_cards: list[int] = []
+        for card_index in len(self.hand):
+            if self.hand[card_index].elixir <= self.elixir:
+                legal_cards.append(card_index)
 
         return legal_cards
 
