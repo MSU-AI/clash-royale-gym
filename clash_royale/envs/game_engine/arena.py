@@ -42,11 +42,11 @@ class Arena(EntityCollection):
     def reset(self) -> None:
         pass
 
-    def step(self) -> None:
+    def step(self, frames: int=1) -> None:
         pass
 
     def get_entities(self) -> List[Entity]:
-        pass
+        return []
 
     def play_card(self, x: int, y: int, card: Card) -> None:
         pass

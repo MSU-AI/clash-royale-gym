@@ -49,19 +49,19 @@ class Player():
         for card in self.hand:
             if card.elixir <= self.elixir:
                 legal_cards.append(card)
+
         return legal_cards
-    
+
     def step(self, 
              elixir_rate: float,
              frames: int=1) -> None:
         """
         Called with the value of elixir_rate and frame to update the elixir of player after 'frame' number of frames
         to better customize the elixir_rate that can vary depends on game modes.
-
         """
 
         self.elixir += (elixir_rate / self.fps) * frames
-    
+
     def pop(self, card_index: int) -> None:
 
         """

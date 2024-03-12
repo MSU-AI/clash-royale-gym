@@ -36,15 +36,16 @@ class DefaultScheduler(GameScheduler):
     """
     Class for default 1v1 game scheduling
     """
+
     def elixir_rate(self) -> float:
-        pass
+        return 0
 
     def game_state(self) -> int:
         """
         Function to get current game state:
         ex: Game is over, double elixir, overtime, etc.
         """
-        pass
+        return 0
 
 
 
