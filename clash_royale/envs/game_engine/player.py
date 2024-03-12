@@ -88,6 +88,7 @@ class Player():
 
         assert card_index >= 0 and card_index < 4
         elixir_cost: float = self.hand[card_index].elixir_cost
-        assert(elixir_cost <= self.elixir)
+
+        assert elixir_cost <= self.elixir
         self.pop(card_index)
         self.elixir -= elixir_cost
