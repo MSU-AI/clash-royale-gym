@@ -14,13 +14,15 @@ class Player():
     """
 
     def __init__(self,
-                 deck: List[Card]) -> None:
+                 deck: List[Card],
+                 fps: int) -> None:
         """
         Player component is initialized with deck of string, 
         specifying the cards' names in the deck.
         """
 
         self.elixir: int = 0
+        self.fps: int = fps
 
         random.shuffle(deck)
         self.deck: Queue = Queue(maxsize = 8)
@@ -51,15 +53,14 @@ class Player():
     
     def step(self, 
              elixir_rate: float,
-             fps: int,
-             frame: int) -> None:
+             frames: int=1) -> None:
         """
         Called with the value of elixir_rate and frame to update the elixir of player after 'frame' number of frames
         to better customize the elixir_rate that can vary depends on game modes.
 
         """
 
-        self.elixir += (elixir_rate / fps) * frame
+        self.elixir += (elixir_rate / self.fps) * frames
     
     def pop(self, card_index: int) -> None:
 

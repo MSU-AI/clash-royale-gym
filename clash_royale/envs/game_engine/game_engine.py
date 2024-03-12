@@ -40,6 +40,7 @@ class GameEngine:
                  width: int=18,
                  height: int=32,
                  resolution: Tuple[int, int]=(128, 128),
+                 fps: int=30
                  ) -> None:
         """
         The game_engine should be initialized with settings such as resolution
@@ -50,12 +51,13 @@ class GameEngine:
         self.width: int = width  # Width of arena
         self.height: int = height  # Height of arena
         self.resolution: Tuple[int, int] = resolution
+        self.fps: int = fps
 
         self.arena: Arena = Arena(width=self.width, height=self.height)
-        self.player1: Player = Player(deck1)
-        self.player2: Player = Player(deck2)
+        self.player1: Player = Player(deck1, fps)
+        self.player2: Player = Player(deck2, fps)
 
-        self.scheduler: Scheduler = Scheduler(fps=30) # counting frames
+        self.scheduler: Scheduler = Scheduler(fps) # counting frames
         self.game_scheduler: GameScheduler = DefaultScheduler(self.scheduler) # determining elixir etc.
 
     def reset(self) -> None:
@@ -103,6 +105,7 @@ class GameEngine:
         assert action[1] >= 0 and action[1] < self.height
         assert action[2] >= 0 and action[2] < 4
 
+        curr_player: Player
         if player_id == 0:
             curr_player = self.player1
         else:
