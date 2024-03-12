@@ -58,7 +58,7 @@ class GameEngine:
         self.player2: Player = Player(deck2, fps)
 
         self.scheduler: Scheduler = Scheduler(fps) # counting frames
-        self.game_scheduler: GameScheduler = DefaultScheduler(self.scheduler) # determining elixir etc.
+        self.game_scheduler: DefaultScheduler = DefaultScheduler(self.scheduler) # determining elixir etc.
 
     def reset(self) -> None:
         """
@@ -156,13 +156,13 @@ class GameEngine:
         """
         if self.game_scheduler.is_game_over():
             return True
-        
+
         if self.game_scheduler.is_overtime():
-            player1_val = self.arena.tower_count(0)
-            player2_val = self.arena.tower_count(1)
+            player1_val: int = self.arena.tower_count(0)
+            player2_val: int = self.arena.tower_count(1)
             if player1_val != player2_val:
                 return True
-            
+
         return False
 
     def terminal_value(self) -> int:
