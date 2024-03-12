@@ -30,7 +30,7 @@ class GameScheduler:
     """
     Template class for game scheduling
     """
-    
+
     def __init__(self, scheduler: Scheduler, fps: int=30) -> None:
         self.scheduler: Scheduler = scheduler
         self.fps: int = fps
@@ -48,6 +48,7 @@ class DefaultScheduler(GameScheduler):
         Function to get current game state:
         ex: Game is over, double elixir, overtime, etc.
         """
+
         return 0
 
     def is_game_over(self) -> bool:
