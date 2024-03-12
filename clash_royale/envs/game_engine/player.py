@@ -38,7 +38,7 @@ class Player():
         TODO: implement deck shuffling
         """
 
-        self.elixir: int = elixir
+        self.elixir: float = elixir
 
     def get_pseudo_legal_cards(self) -> List[Card]:
         """
@@ -53,7 +53,7 @@ class Player():
 
         return legal_cards
 
-    def step(self, 
+    def step(self,
              elixir_rate: float,
              frames: int=1) -> None:
         """
