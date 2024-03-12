@@ -56,3 +56,6 @@ class Arena(EntityCollection):
 
     def get_placement_mask(self) -> npt.NDArray[bool]:
         return np.ones(shape=(32, 18), dtype=bool)
+
+    def tower_count(self, player_id: int) -> int:
+        return 0
