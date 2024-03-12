@@ -6,7 +6,7 @@ The components defined here are probably what end users want to utilize,
 as they will greatly simplify the simulation procedure.
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 import numpy as np
 import numpy.typing as npt
