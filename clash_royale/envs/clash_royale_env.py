@@ -1,3 +1,6 @@
+from __future__ import annotations
+from typing import Tuple, List
+
 import numpy as np
 import pygame
 
@@ -6,103 +9,19 @@ from gymnasium import spaces
 
 from clash_royale.envs.game_engine.game_engine import GameEngine
 
-MAX_NUMBER_TROOPS = 32
-MAX_TROOP_TYPES = 32
-MAX_TROOP_HEALTH = 1000
-
-KING_TOWER_RANGE = 7.0
-KING_TOWER_DAMAGE = 109
-KING_TOWER_HEALTH = 4824
-
-TROOP_SPEED_MAP = {'slow': 0.75, 'medium': 1.0, 'fast': 1.5, 'very fast': 2.0}
-
-# barbarian, archer, giant, skeleton
-TROOP_COLORS = [(153, 255, 51), (255, 102, 155), (139, 69, 19), (250, 250, 250)]
-TROOP_SPEEDS = [1.0, 1.0, 0.75, 1.5]
-TROOP_SIZES = [0.3, 0.3, 0.3, 0.3]
-TROOP_ATTACK_RANGE = [0.8, 5, 0.8, 0.8]
-TROOP_SIGHT_RANGE = [5.5, 5.5, 7.5, 5.5]
-TROOP_HEALTH = [670, 304, 4091, 81]
-TROOP_DAMAGE = [147, 118, 169, 81]
-TROOP_BUILDING_TARGETING = [False, False, True, False]
-
-
-
-HEALTH_BAR_HEIGHT = 0.15
-
-
-def calculate_health_bar_length(max_health):
-    #return 0.5529703695314562 * np.log(max_health + 1)
-    return 1
-
-def draw_rectangle_from_center(canvas, color, location, size):
-    pygame.draw.rect(
-            canvas,
-            color,
-            pygame.Rect(
-                location - size / 2,
-                size,
-            ),
-        )
-    
-def draw_health_bar(canvas, health_bar_color, center, health, max_health, pix_square_size):
-    draw_rectangle_from_center(canvas, health_bar_color, 
-                            center * pix_square_size,
-                            [(health / max_health) * calculate_health_bar_length(max_health), 
-                             HEALTH_BAR_HEIGHT] * pix_square_size)
-
-def draw_king_tower(canvas, side, location, pix_square_size, health):
-    color = (190, 0, 0) if side == 'red' else (0,0,190)
-    health_color = (155, 0, 0) if side == 'red' else (0, 0, 155)
-    direction = [0, -0.7] if side == 'red' else [0, 0.7]
-    draw_rectangle_from_center(canvas, (0, 0, 0), location * pix_square_size, pix_square_size)
-    draw_rectangle_from_center(canvas, color, location * pix_square_size, pix_square_size*0.9)
-    draw_health_bar(canvas, health_color, 
-                    location + direction,
-                    health, KING_TOWER_HEALTH, pix_square_size)
-
-def draw_troop(canvas, troop, health_bar_color, pix_square_size):
-    #   draws using circles
-    troop_type = int(troop[2])
-    radius = TROOP_SIZES[troop_type]
-    pygame.draw.circle(
-        canvas,
-        (0,0,0),
-        troop[:2] * pix_square_size,
-        radius * pix_square_size[1],
-    )
-    pygame.draw.circle(
-        canvas,
-        TROOP_COLORS[troop_type],
-        troop[:2] * pix_square_size,
-        radius * pix_square_size[1]*0.95,
-    )
-    draw_health_bar(canvas, health_bar_color,
-                    [troop[0], troop[1] - radius - 0.15],
-                    troop[3],
-                    TROOP_HEALTH[troop_type],
-                    pix_square_size)
     
 class ClashRoyaleEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 16}
 
-    def __init__(self, render_mode=None, width=8, height=18):
-        self.width = width  # The size of the square grid
-        self.height = height
-        self.window_size_width = 360  # The size of the PyGame window width
-        self.window_size_height = 810  # The size of the PyGame window height
+    def __init__(self, render_mode: str | None=None, width: int=18, height: int=32):
+        self.width: int = width  # The size of the square grid
+        self.height: int = height
+        resolution: Tuple[int, int] = (128, 128)
 
-        # Observations are dictionaries with the agent's and the target's location.
-        # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
         self.observation_space = spaces.Dict(
-            {
-                "blue-troops": spaces.Box(0, np.tile(np.array([width, height, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
-                "red-troops": spaces.Box(0, np.tile(np.array([width, height, MAX_TROOP_TYPES, MAX_TROOP_HEALTH]), (MAX_NUMBER_TROOPS,1,)), shape=(MAX_NUMBER_TROOPS, 4,), dtype=np.float32),
-            }
         )
 
-        # We have 4 actions, corresponding to "right", "up", "left", "down"
-        self.action_space = spaces.Discrete(4)
+        self.action_space = spaces.Discrete(1)
 
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
