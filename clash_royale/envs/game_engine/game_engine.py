@@ -136,12 +136,13 @@ class GameEngine:
         """
         Returns a list of legal actions.
         """
-        actions = np.zeros(shape=(32, 18, 5), dtype=np.float64)
-        actions[:,:,4] = 1 # no card is always legal
+        actions = np.zeros(shape=(32, 18, 4), dtype=np.float64)
+
+        hand: List[Card]
         if player_id == 0:
-            hand = self.player_1.get_pseudo_legal_cards()
+            hand = self.player1.get_pseudo_legal_cards()
         else:
-            hand = self.player_2.get_pseudo_legal_cards()
+            hand = self.player2.get_pseudo_legal_cards()
 
         placement_mask = self.arena.get_placement_mask()
         for card_index in hand:
