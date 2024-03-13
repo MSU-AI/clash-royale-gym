@@ -2,6 +2,8 @@
 Various structures to be utilized   
 """
 
+from __future__ import annotations
+
 import dataclasses
 
 class Scheduler:
@@ -13,7 +15,7 @@ class Scheduler:
     def __init__(self, fps: int =30):
         self.fps: int = fps
         self.frame_num: int = 0
-    
+
     def reset(self):
         self.frame_num = 0
 
@@ -23,32 +25,37 @@ class Scheduler:
 
     def frame(self) -> int:
         return self.frame_num
-    
+
 class GameScheduler:
     """
     Template class for game scheduling
     """
+
     def __init__(self, scheduler: Scheduler, fps: int=30) -> None:
-        self.scheduler = scheduler
+        self.scheduler: Scheduler = scheduler
+        self.fps: int = fps
 
 class DefaultScheduler(GameScheduler):
     """
     Class for default 1v1 game scheduling
     """
-    def __init__(self, scheduler: Scheduler, fps: int=30) -> None:
-        super.__init__(scheduler, fps)
 
     def elixir_rate(self) -> float:
-        pass
+        return 0
 
     def game_state(self) -> int:
         """
         Function to get current game state:
         ex: Game is over, double elixir, overtime, etc.
         """
-        pass
-    
 
+        return 0
+
+    def is_game_over(self) -> bool:
+        return False
+
+    def is_overtime(self) -> bool:
+        return False
 
 @dataclasses.dataclass(slots=True)
 class Stats:

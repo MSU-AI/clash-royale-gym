@@ -15,6 +15,7 @@ from clash_royale.envs.game_engine.entities.entity import Entity
 from clash_royale.envs.game_engine.utils import distance
 
 if TYPE_CHECKING:
+    # Only import for typechecking to prevent circular dependency
     from clash_royale.envs.game_engine.entities.logic_entity import LogicEntity
 
 
@@ -28,23 +29,23 @@ class BaseAttack:
     """
 
     def __init__(self) -> None:
-        
+
         self.entity: LogicEntity  # Entity we are managing
         self.arena: Arena  # Arena we are apart of
 
         self.last_attack: int = 0  # Frame of last attack
 
-    def entity_distance(self, tentity: Entity) -> float:
+    def entity_distance(self, target_entity: Entity) -> float:
         """
         Determines the distance between an entity and ourselves.
 
-        :param tentity: Entity to determine distance
-        :type tentity: Entity
+        :param target_entity: Entity to determine distance
+        :type target_entity: Entity
         :return: Distance between entities
         :rtype: float
         """
 
-        return distance(self.entity.x, self.entity.y, tentity.x, tentity.y)
+        return distance(self.entity.x, self.entity.y, target_entity.x, target_entity.y)
 
     def can_attack(self) -> bool:
         """
@@ -59,7 +60,7 @@ class BaseAttack:
 
         # Determine if we have a target:
 
-        if self.entity.target_ent is not None:
+        if self.entity.target_entity is not None:
 
             # Determine if our delay has passed:
 
@@ -67,14 +68,14 @@ class BaseAttack:
 
                 # Determine if entity is within range:
 
-                if self.entity.stats.attack_range <= self.entity_distance(self.entity.target_ent):
+                if self.entity.stats.attack_range <= self.entity_distance(self.entity.target_entity):
 
                     # Within range, return True:
 
                     return True
-                
+
         # Otherwise, return False:
-                
+
         return False
 
     def attack(self):
@@ -105,4 +106,4 @@ class SingleAttack(BaseAttack):
 
             # Otherwise, preform an attack:
 
-            self.entity.target_ent.stats.health -= self.entity.stats.damage
+            self.entity.target_entity.stats.health -= self.entity.stats.damage

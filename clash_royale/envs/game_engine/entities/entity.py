@@ -4,11 +4,12 @@ Base entity components
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from clash_royale.envs.game_engine.struct import Stats
 
 if TYPE_CHECKING:
+    # Only import for typechecking to prevent circular dependency
     from clash_royale.envs.game_engine.arena import Arena
 
 
@@ -36,11 +37,11 @@ class Entity:
     Created -> Loaded +> Started -> Running -> Stopped +> Unloaded
 
     * Created - Entity is instantiated
-    * Loaded - Entity is loaded into a collection, relevant load code is ran
-    * Started - Entity is started, relevant start code is ran 
+    * Loaded - Entity is loaded into a collection, load code is ran
+    * Started - Entity is started, start code is ran 
     * Running - Entity is running and working in some way
-    * Stopped - Entity is stopped, relevant stop code is ran and entity is no longer working with data
-    * Unloaded - Entity is unloaded, relevant unload code is ran
+    * Stopped - Entity is stopped, stop code is ran and entity is no longer working with data
+    * Unloaded - Entity is unloaded, unload code is ran
     """
 
     CREATED: int = 0
@@ -83,7 +84,7 @@ class Entity:
 
         return self.collection
 
-    def load(self):
+    def load(self) -> None:
         """
         Method called when this entity is loaded.
 
@@ -100,21 +101,21 @@ class Entity:
 
         self.state = Entity.LOADED
 
-    def unload(self):
+    def unload(self) -> None:
         """
         Method called when this entity is unloaded.
 
         This method is invoked when the entity is unloaded from a high level component.
         When this method is called,
         it is reasonable to assume that this entity is not going to be used again.
-        entitys can use this a a sign that their work is done.
+        entities can use this a a sign that their work is done.
 
         It is recommended to make any final, permanent changes once this method is called.
         """
 
         self.state = Entity.UNLOADED
 
-    def start(self):
+    def start(self) -> None:
         """
         Method called when this entity is started.
 
@@ -130,7 +131,7 @@ class Entity:
 
         self.state = Entity.STARTED
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Method called when this entity is stopped.
 
@@ -151,7 +152,7 @@ class Entity:
 
         self.state = Entity.STOPPED
 
-    def render(self):
+    def render(self) -> None:
         """
         Asks this entity to render itself!
 
@@ -164,7 +165,7 @@ class Entity:
 
         pass
 
-    def simulate(self):
+    def simulate(self) -> None:
         """
         Preforms entity simulation for this frame.
 
@@ -208,11 +209,11 @@ class EntityCollection(object):
     def __init__(self) -> None:
 
         # entity storage component
-        self.entities = []
+        self.entities: List[Entity] = []
 
-        self.running = False  # Value determining if we are running
-        self.num_loaded = 0  # Number of entity's currently loaded
-        self.max_loaded = 0  # Max number of entity's loaded
+        self.running: bool = False  # Value determining if we are running
+        self.num_loaded: int = 0  # Number of entity's currently loaded
+        self.max_loaded: int = 0  # Max number of entity's loaded
 
     def load_entity(self, entity: Entity) -> Entity:
         """
@@ -241,7 +242,7 @@ class EntityCollection(object):
 
             # Load error occurred! Raise an exception!
 
-            raise Exception("entity load() method failed! Not loading: {}".format(entity), e)
+            raise Exception(f"entity load() method failed! Not loading: {entity}", e)
 
         # Add the entity to our collection:
 
@@ -292,7 +293,7 @@ class EntityCollection(object):
 
             # Raise an exception of our own:
 
-            raise Exception("entity failed to unload! Unloading: {}".format(entity), e)
+            raise Exception(f"entity failed to unload! Unloading: {entity}", e)
 
         # Unload the entity:
 
@@ -328,7 +329,7 @@ class EntityCollection(object):
 
             self._unload_entity(entity)
 
-            raise Exception("entity stop() method failed! Unloading: {}".format(entity), e)
+            raise Exception(f"entity stop() method failed! Unloading: {entity}", e)
 
         # Return the entity:
 
@@ -364,7 +365,7 @@ class EntityCollection(object):
 
             # Raise an exception:
 
-            raise Exception("entity start() method failed! Unloading: {}".format(entity), e)
+            raise Exception(f"entity start() method failed! Unloading: {entity}", e)
 
         # Return the entity:
 
@@ -383,9 +384,9 @@ class EntityCollection(object):
         then the entity will be forcefully unloaded!
 
         :param entity: entity to restart
-        :type entity: Baseentity
+        :type entity: Entity
         :return: The entity we restarted
-        :rtype: Baseentity
+        :rtype: Entity
         """
 
         # Stop the entity
@@ -400,11 +401,11 @@ class EntityCollection(object):
 
         return entity
 
-    def start(self):
+    def start(self) -> None:
         """
         Method used to start this entityCollection.
 
-        We set our running status and start all loaded entitys.
+        We set our running status and start all loaded entities.
         """
 
         # Set our running status:
@@ -413,7 +414,7 @@ class EntityCollection(object):
 
         # Start all connected entity's:
 
-        for mod in self.entitys:
+        for mod in self.entities:
 
             # Determine if this entity needs starting:
 
@@ -423,12 +424,12 @@ class EntityCollection(object):
 
                 self.start_entity(mod)
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Method used to stop this entityCollection.
 
         We set our running status,
-        and stop all started entitys.
+        and stop all started entities.
 
         Sub-classes should put stop code here to end their relevant components.
         """
@@ -437,7 +438,7 @@ class EntityCollection(object):
 
         self.running = False
 
-        for mod in self.entitys:
+        for mod in self.entities:
 
             # Determine if this entity needs stopping:
 
@@ -449,24 +450,19 @@ class EntityCollection(object):
 
         return
 
-    def _load_entity(self, mod: Entity):
+    def _load_entity(self, entity: Entity) -> None:
         """
         Adds the entity to our collection. 
 
         This low-level method is not intended to
         be worked with by end users!
 
-        :param mod: entity to add
-        :type mod: Baseentity
+        :param entity: entity to add
+        :type entity: Entity
         """
 
         # Create the data to be stored:
-
-        temp = (mod,)
-
-        # Add the entity to the collection:
-
-        self.entitys = self.entitys + temp
+        self.entities.append(entity)
 
         # Update our stats:
 
@@ -475,32 +471,23 @@ class EntityCollection(object):
 
         # Attach the collection to the entity:
 
-        mod.collection = self
+        entity.collection = self
 
-    def _unload_entity(self, mod: Entity):
+    def _unload_entity(self, entity: Entity) -> None:
         """
-        Low-level method for unloading entitys from the list.
+        Low-level method for unloading entities from the list.
 
         We do not call any methods or work with the entity in any way
         other than removing it from the data structure.
 
-        :param mod: The entity in question to remove
-        :type mod: Baseentity
+        :param entity: The entity in question to remove
+        :type entity: Entity
         :param key: Key of the entity to remove
         :type key: str
         """
 
-        # Convert the tuple into a list:
-
-        temp = list(self.entitys)
-
         # Remove the offending entity:
-
-        temp.remove(mod)
-
-        # Set our list:
-
-        self.entitys = tuple(temp)
+        self.entities.remove(entity)
 
         # Update our stats:
 

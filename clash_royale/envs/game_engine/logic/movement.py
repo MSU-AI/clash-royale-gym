@@ -10,11 +10,10 @@ import math
 
 from typing import TYPE_CHECKING
 
-from clash_royale.envs.game_engine.entities.entity import Entity
 from clash_royale.envs.game_engine.arena import Arena
-from clash_royale.envs.game_engine.utils import slope
 
 if TYPE_CHECKING:
+    # Only import for typechecking to prevent circular dependency
     from clash_royale.envs.game_engine.entities.logic_entity import LogicEntity
 
 
@@ -24,11 +23,11 @@ class BaseMovement:
     """
 
     def __init__(self) -> None:
-        
+
         self.entity: LogicEntity  # Entity we are attached to
         self.arena: Arena  # Arena component to consider
 
-    def move(self):
+    def move(self) -> None:
         """
         Moves the entity in some way.
 
@@ -44,7 +43,7 @@ class SimpleMovement(BaseMovement):
     SimpleMovement - Simply move in a straight line to the target 
     """
 
-    def move(self):
+    def move(self) -> None:
         """
         Moves in a straight line towards target.
         """

@@ -31,7 +31,7 @@ class LogicEntity(Entity):
         self.target: BaseTarget  # Target component to use
         self.movement: BaseMovement  # Movement component to use
 
-        self.target_ent: Entity  # Current entity being considered
+        self.target_entity: Entity  # Current entity being considered
 
     def simulate(self):
         """
@@ -40,7 +40,7 @@ class LogicEntity(Entity):
 
         # First, ask for targeting:
 
-        self.target_ent = self.target.target()
+        self.target_entity = self.target.target()
 
         # Next, determine attack:
 

@@ -4,7 +4,6 @@ Various utility components that do not fit elsewhere
 
 import math
 
-
 def distance(x1: int, y1: int, x2: int, y2: int) -> float:
     """
     Determines the distance between two points
